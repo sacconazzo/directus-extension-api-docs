@@ -1,6 +1,6 @@
 # directus-extension-api-docs
 
-Directus Extension for include a Swagger interface and custom endpoints definitions
+Directus Extension to include a Swagger interface and custom endpoints definitions
 
 ![workspace](assets/swagger.png)
 
@@ -28,8 +28,8 @@ Example below:
     "paths": {
         "/my-custom-path/my-endpoint": {
             "post": {
-                "summary": "something",
-                "description": "something",
+                "summary": "do something",
+                "description": "do something",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Meta"
