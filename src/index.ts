@@ -9,8 +9,10 @@ const path = require('path');
 
 interface config {
     docsPath?: string;
-    tags?: any;
-    paths?: any;
+    tags?: Array<object>;
+    paths?: {
+        [key: string]: object;
+    };
 }
 
 function getConfig(): config {

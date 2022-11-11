@@ -16,7 +16,7 @@ Ref: https://github.com/directus/directus
 
     npm install directus-extension-api-docs
 
-## Configuration
+## Configuration (optional)
 
 For include you custom endpoints.
 
