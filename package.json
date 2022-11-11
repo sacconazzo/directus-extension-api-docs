@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-api-docs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "directus extension for swagger interface and custom endpoints definitions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,8 +8,8 @@
     "dist",
     "!*.map"
   ],
-  "repository": "",
-  "homepage": "#readme",
+  "repository": "https://github.com/sacconazzo/directus-extension-api-docs",
+  "homepage": "https://github.com/sacconazzo/directus-extension-api-docs#readme",
   "keywords": [
     "directus",
     "directus-extension",
