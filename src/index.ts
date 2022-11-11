@@ -37,9 +37,9 @@ export default {
                 swagger.info.version = pkg.version;
                 swagger.info.description = pkg.description;
 
-                // ! inject custom-endpoints
+                // inject custom-endpoints
                 try {
-                    const pathFile = path.join(directusDir, './extensions/endpoints/definitions.json');
+                    const pathFile = path.join(directusDir, './extensions/endpoints/oas.json');
                     const pathSchema = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
                     if (pathSchema) {
                         for (const path in pathSchema.paths) {
