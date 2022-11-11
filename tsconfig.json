@@ -25,12 +25,14 @@
 		"forceConsistentCasingInFileNames": true,
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
+		"sourceMap": true,
+		"declaration": false,
+		"allowJs": true,
 		"rootDir": ".",
 		"types": [
 			"node",
 			"jest"
-		],
-		"sourceMap": true
+		]
 	},
 	"include": [
 		"./src/**/*.ts",

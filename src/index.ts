@@ -9,7 +9,7 @@ const path = require('path');
 
 export default {
     id: 'api-docs',
-    handler: defineEndpoint((router, { services, exceptions }) => {
+    handler: defineEndpoint((router, { services, exceptions, logger }) => {
         const { ServiceUnavailableException } = exceptions;
         const { SpecificationService } = services;
 
@@ -38,9 +38,16 @@ export default {
                 swagger.info.description = pkg.description;
 
                 // ! inject custom-endpoints
-                const pathFile = path.join(directusDir, './extensions/endpoints/definitions.json');
-                const pathSchema = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
-                if (pathSchema) {
+                try {
+                    const pathFile = path.join(directusDir, './extensions/endpoints/definitions.json');
+                    const pathSchema = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
+                    if (pathSchema) {
+                        for (const path in pathSchema.paths) {
+                            swagger.paths[path] = pathSchema.paths[path];
+                        }
+                    }
+                } catch (e) {
+                    logger.info('No custom definitions');
                 }
 
                 res.json(swagger);
