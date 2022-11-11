@@ -1,4 +1,4 @@
-const esModules = ['@directus/extensions-sdk', 'ngx-bootstrap'].join('|');
+const esModules = ['@directus/extensions-sdk'].join('|');
 
 module.exports = {
     preset: 'ts-jest',
