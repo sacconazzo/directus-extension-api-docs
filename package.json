@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-api-docs",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "directus extension for swagger interface and custom endpoints definitions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

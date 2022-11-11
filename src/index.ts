@@ -15,7 +15,7 @@ interface config {
 
 function getConfig(): config {
     try {
-        const configFile = path.join(directusDir, './extensions/endpoints/oas.json');
+        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.json');
         return JSON.parse(fs.readFileSync(configFile, 'utf-8'));
     } catch (e) {
         return {};
@@ -34,7 +34,7 @@ export default {
 
         const options = {
             swaggerOptions: {
-                url: `/${id}}/oas`,
+                url: `/${id}/oas`,
             },
         };
 
