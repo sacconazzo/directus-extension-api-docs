@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 interface config {
-    id?: string;
+    docsPath?: string;
     tags?: any;
     paths?: any;
 }
@@ -24,7 +24,7 @@ function getConfig(): config {
 
 const config = getConfig();
 
-const id = config?.id || 'api-docs';
+const id = config?.docsPath || 'api-docs';
 
 export default {
     id,
