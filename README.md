@@ -25,6 +25,13 @@ Example below:
 
 ```
 {
+    "docsPath": "api-docs",
+    "tags": [
+        {
+            "name":"MyCustomTag",
+            "description":"MyCustomTag description"
+        },
+    ],
     "paths": {
         "/my-custom-path/my-endpoint": {
             "post": {

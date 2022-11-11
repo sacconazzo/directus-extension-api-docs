@@ -7,15 +7,34 @@ const directusDir = process.cwd();
 const fs = require('fs');
 const path = require('path');
 
+interface config {
+    id?: string;
+    tags?: any;
+    paths?: any;
+}
+
+function getConfig(): config {
+    try {
+        const configFile = path.join(directusDir, './extensions/endpoints/oas.json');
+        return JSON.parse(fs.readFileSync(configFile, 'utf-8'));
+    } catch (e) {
+        return {};
+    }
+}
+
+const config = getConfig();
+
+const id = config?.id || 'api-docs';
+
 export default {
-    id: 'api-docs',
+    id,
     handler: defineEndpoint((router, { services, exceptions, logger }) => {
         const { ServiceUnavailableException } = exceptions;
         const { SpecificationService } = services;
 
         const options = {
             swaggerOptions: {
-                url: '/api-docs/oas',
+                url: `/${id}}/oas`,
             },
         };
 
@@ -39,11 +58,14 @@ export default {
 
                 // inject custom-endpoints
                 try {
-                    const pathFile = path.join(directusDir, './extensions/endpoints/oas.json');
-                    const pathSchema = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
-                    if (pathSchema) {
-                        for (const path in pathSchema.paths) {
-                            swagger.paths[path] = pathSchema.paths[path];
+                    if (config?.paths) {
+                        for (const path in config.paths) {
+                            swagger.paths[path] = config.paths[path];
+                        }
+                    }
+                    if (config?.tags) {
+                        for (const tag of config.tags) {
+                            swagger.tags.push(tag);
                         }
                     }
                 } catch (e) {
