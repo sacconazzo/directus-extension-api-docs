@@ -107,13 +107,10 @@ const id = 'my-custom-path';
 
 module.exports = {
     id,
-    handler: function registerEndpoint(router, { services, exceptions, logger }) {
+    handler: async function registerEndpoint(router, { services, getSchema }) {
 
-        router.post('/my-endpoint-not-validated', async (req, res, next) => {
-            ...
-        });
-
-        validate(router, [`/${id}/my-endpoint`]);
+        const schema = await getSchema();
+        await validate(router, services, schema); // Enable validator for custom endpoints
 
         router.post('/my-endpoint', async (req, res, next) => {
             ...

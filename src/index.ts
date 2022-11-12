@@ -3,10 +3,9 @@ import { Router, Request, Response } from 'express';
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
 const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
-const directusDir = process.cwd();
-
 const fs = require('fs');
 const path = require('path');
+const directusDir = process.cwd();
 
 interface oasconfig {
     docsPath?: string;
@@ -24,6 +23,8 @@ interface oas {
     };
 }
 
+let oas: string;
+
 function getConfig(): oasconfig {
     try {
         const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.json');
@@ -35,16 +36,34 @@ function getConfig(): oasconfig {
 
 const config = getConfig();
 
-function validate(router: Router, paths: Array<string>): Router {
+async function getOas(services: any, schema: any): Promise<any> {
+    if (oas) return JSON.parse(oas);
+
+    const { SpecificationService } = services;
+    const service = new SpecificationService({
+        accountability: { admin: true }, // null or accountability.admin = true needed
+        schema,
+    });
+
+    oas = JSON.stringify(await service.oas.generate());
+
+    return JSON.parse(oas);
+}
+
+async function validate(router: Router, services: any, schema: any): Promise<Router> {
     if (config?.paths) {
-        const oas: oas = {
-            openapi: '3.0.1',
-            info: { title: '', description: '', version: '' },
-            paths: {},
-        };
-        for (const path of paths) {
-            oas.paths[path] = config.paths[path];
-        }
+        const oas = await getOas(services, schema);
+
+        // fix compatibility openapi
+        delete oas.components.definitions;
+        // delete oas.components['x-metadata']
+        // delete oas.components['securitySchemes']
+        // delete oas.components['parameters']
+        // delete oas.components['responses']
+        delete oas.components.schemas;
+
+        oas.paths = config.paths; // replace with custom endpoints
+
         router.use(
             OpenApiValidator.middleware({
                 apiSpec: oas,
@@ -65,9 +84,8 @@ const id = config?.docsPath || 'api-docs';
 export default {
     id,
     validate,
-    handler: defineEndpoint((router, { services, exceptions, logger }) => {
+    handler: defineEndpoint((router, { services, exceptions, logger, getSchema }) => {
         const { ServiceUnavailableException } = exceptions;
-        const { SpecificationService } = services;
 
         const options = {
             swaggerOptions: {
@@ -78,14 +96,10 @@ export default {
         router.use('/', swaggerUi.serve);
         router.get('/', swaggerUi.setup({}, options));
 
-        router.get('/oas', async (req: any, res: any, next: any) => {
+        router.get('/oas', async (_req: any, res: any, next: any) => {
             try {
-                const service = new SpecificationService({
-                    accountability: { admin: true }, // null or accountability.admin = true needed
-                    schema: req.schema,
-                });
-
-                const swagger = await service.oas.generate();
+                const schema = await getSchema();
+                const swagger = await getOas(services, schema);
 
                 const pkg = require(`${await findWorkspaceDir('.')}/package.json`);
 
