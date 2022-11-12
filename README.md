@@ -40,17 +40,19 @@ Example below:
             "post": {
                 "summary": "do something",
                 "description": "do something",
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/Meta"
-                    }
-                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Users"
-                            }
+                                "type": "object",
+                                "required": [
+                                    "field"
+                                ],
+                                "properties": {
+                                    "field": {
+                                        "type": "string"
+                                    }
+                                }
                         }
                     }
                 },
@@ -62,8 +64,8 @@ Example below:
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/Users"
+                                        "field": {
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -71,10 +73,12 @@ Example below:
                         }
                     },
                     "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
+                        "description": "Unauthorized",
+                        "content": {}
                     },
                     "404": {
-                        "$ref": "#/components/responses/NotFoundError"
+                        "description": "Not Found",
+                        "content": {}
                     }
                 },
                 "tags": [
