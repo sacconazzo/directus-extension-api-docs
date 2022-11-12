@@ -1,6 +1,6 @@
 {
   "name": "directus-extension-api-docs",
-  "version": "1.1.2",
+  "version": "1.1.6",
   "description": "directus extension for swagger interface and custom endpoints definitions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,11 +34,13 @@
   },
   "dependencies": {
     "@pnpm/find-workspace-dir": "^5.0.0",
+    "express-openapi-validator": "^4.13.8",
     "swagger-ui-express": "^4.6.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
-    "@directus/extensions-sdk": "9.19.2",
+    "@directus/extensions-sdk": "^9.20.4",
+    "@types/express": "^4.17.14",
     "@types/jest": "^29.2.2",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
@@ -48,6 +50,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "express": "^4.18.2",
     "jest": "^29.3.1",
     "jest-extended": "^3.1.0",
     "openapi-schema-validator": "^12.0.2",
