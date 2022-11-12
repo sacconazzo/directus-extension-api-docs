@@ -50,7 +50,7 @@ async function getOas(services: any, schema: any): Promise<any> {
     return JSON.parse(oas);
 }
 
-async function validate(router: Router, services: any, schema: any): Promise<Router> {
+async function validate(router: Router, services: any, schema: any, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
         const oas = await getOas(services, schema);
 
@@ -62,7 +62,14 @@ async function validate(router: Router, services: any, schema: any): Promise<Rou
         // delete oas.components['responses']
         delete oas.components.schemas;
 
-        oas.paths = config.paths; // replace with custom endpoints
+        // replace with custom endpoints
+        if (paths) {
+            for (const path of paths) {
+                oas.paths[path] = config.paths[path];
+            }
+        } else {
+            oas.paths = config.paths;
+        }
 
         router.use(
             OpenApiValidator.middleware({
