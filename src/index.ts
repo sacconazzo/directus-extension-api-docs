@@ -13,13 +13,8 @@ interface oasconfig {
     paths?: {
         [key: string]: object;
     };
-}
-
-interface oas {
-    openapi: string;
-    info: object;
-    paths: {
-        [key: string]: any;
+    components?: {
+        [key: string]: object;
     };
 }
 
@@ -54,14 +49,6 @@ async function validate(router: Router, services: any, schema: any, paths: Array
     if (config?.paths) {
         const oas = await getOas(services, schema);
 
-        // fix compatibility openapi
-        delete oas.components.definitions;
-        // delete oas.components['x-metadata']
-        // delete oas.components['securitySchemes']
-        // delete oas.components['parameters']
-        // delete oas.components['responses']
-        delete oas.components.schemas;
-
         // replace with custom endpoints
         if (paths) {
             for (const path of paths) {
@@ -69,6 +56,18 @@ async function validate(router: Router, services: any, schema: any, paths: Array
             }
         } else {
             oas.paths = config.paths;
+        }
+
+        if (config.components) {
+            oas.components = config.components;
+        } else {
+            // fix compatibility openapi
+            delete oas.components.definitions;
+            // delete oas.components['x-metadata']
+            // delete oas.components['securitySchemes']
+            // delete oas.components['parameters']
+            // delete oas.components['responses']
+            delete oas.components.schemas;
         }
 
         router.use(
