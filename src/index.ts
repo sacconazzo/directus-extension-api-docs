@@ -14,18 +14,12 @@ interface oasconfig {
     paths?: {
         [key: string]: object;
     };
-    components?: {
-        [key: string]: any;
-    };
 }
 
 interface oas {
     openapi: string;
     info: object;
     paths: {
-        [key: string]: any;
-    };
-    components: {
         [key: string]: any;
     };
 }
@@ -41,18 +35,16 @@ function getConfig(): oasconfig {
 
 const config = getConfig();
 
-function validate(router: Router, paths: Array<string>) {
+function validate(router: Router, paths: Array<string>): Router {
     if (config?.paths) {
         const oas: oas = {
             openapi: '3.0.1',
             info: { title: '', description: '', version: '' },
             paths: {},
-            components: {},
         };
         for (const path of paths) {
             oas.paths[path] = config.paths[path];
         }
-        if (config.components) oas.components = config.components;
         router.use(
             OpenApiValidator.middleware({
                 apiSpec: oas,
@@ -65,6 +57,7 @@ function validate(router: Router, paths: Array<string>) {
             });
         });
     }
+    return router;
 }
 
 const id = config?.docsPath || 'api-docs';
