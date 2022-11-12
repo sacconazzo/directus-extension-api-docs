@@ -22,7 +22,7 @@ Ref: https://github.com/directus/directus
 
 For include you custom endpoints.
 
-Create a `oas.json` file under `/extensions/endpoints` folder.
+Create a `oasconfig.json` file under `/extensions/endpoints` folder.
 
 Example below:
 
@@ -108,6 +108,10 @@ const id = 'my-custom-path';
 module.exports = {
     id,
     handler: function registerEndpoint(router, { services, exceptions, logger }) {
+
+        router.post('/my-endpoint-not-validated', async (req, res, next) => {
+            ...
+        });
 
         validate(router, [`/${id}/my-endpoint`]);
 
