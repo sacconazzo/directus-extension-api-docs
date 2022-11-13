@@ -134,7 +134,7 @@ export default {
                             swagger.tags.push(tag);
                         }
                     }
-                    if (config?.components) swagger.components = merge(swagger.components, config.components);
+                    if (config?.components) swagger.components = merge(config.components, swagger.components);
                 } catch (e) {
                     logger.info('No custom definitions');
                 }
