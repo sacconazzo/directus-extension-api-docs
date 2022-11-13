@@ -3,7 +3,6 @@ import { Router, Request, Response } from 'express';
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
 const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
-const fs = require('fs');
 const path = require('path');
 const directusDir = process.cwd();
 
@@ -22,8 +21,7 @@ let oas: string;
 
 function getConfig(): oasconfig {
     try {
-        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.json');
-        return JSON.parse(fs.readFileSync(configFile, 'utf-8'));
+        return require(path.join(directusDir, './extensions/endpoints/oasconfig.json'));
     } catch (e) {
         return {};
     }

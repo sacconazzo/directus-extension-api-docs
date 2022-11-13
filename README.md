@@ -22,73 +22,77 @@ Ref: https://github.com/directus/directus
 
 For include you custom endpoints.
 
-Create a `oasconfig.json` file under `/extensions/endpoints` folder.
+Create a `oasconfig.js` file under `/extensions/endpoints` folder.
+
+Options:
+
+-   `docsPath` path where the interface will be
+-   `tags` openapi custom tags
+-   `paths` openapi custom paths
+-   `components` openapi custom components (you can ref to directus standard components declaring them empty)
 
 Example below:
 
 ```
-{
-    "docsPath": "api-docs",
-    "tags": [
+module.exports = {
+    docsPath: 'api-docs', // optional default 'api-docs'
+    tags: [
         {
-            "name":"MyCustomTag",
-            "description":"MyCustomTag description"
+            name: 'MyCustomTag',
+            description: 'MyCustomTag description',
         },
     ],
-    "paths": {
-        "/my-custom-path/my-endpoint": {
-            "post": {
-                "summary": "do something",
-                "description": "do something",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "required": [
-                                    "field"
-                                ],
-                                "properties": {
-                                    "field": {
-                                        "type": "string"
-                                    }
-                                }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "field": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
+    paths: {
+        '/my-custom-path/my-endpoint': {
+            post: {
+                summary: 'do something',
+                description: 'do something',
+                requestBody: {
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                required: ['field'],
+                                properties: {
+                                    field: {
+                                        type: 'string',
+                                    },
+                                },
+                            },
+                        },
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {}
+                    responses: {
+                        '200': {
+                            description: 'Successful request',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            field: {
+                                                type: 'string',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        '401': {
+                            description: 'Unauthorized',
+                            content: {},
+                        },
+                        '404': {
+                            description: 'Not Found',
+                            content: {},
+                        },
                     },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {}
-                    }
+                    tags: ['MyCustomTag', 'Assets'],
                 },
-                "tags": [
-                    "MyCustomTag",
-                    "Assets"
-                ]
-            }
-        }
-    }
-}
+            },
+        },
+    },
+    components: {},
+};
 ```
 
 ## Validations (optional)
@@ -96,7 +100,8 @@ Example below:
 You can enable a request validations middleware based on your custom definitions.
 
 Call `validate` function inside your custom endpoint registration.
-Pass your `router` and a list of endpoints you want to validate.
+
+Pass your `router`, `services`, `schema` and (_optional_) a list of endpoints you want to validate.
 
 Example below:
 
