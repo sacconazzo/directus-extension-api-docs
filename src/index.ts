@@ -45,6 +45,15 @@ async function getOas(services: any, schema: any): Promise<any> {
     return JSON.parse(oas);
 }
 
+function merge(target: any, source: any) {
+    for (const key of Object.keys(source)) {
+        if (source[key] instanceof Object) Object.assign(source[key], merge(target[key], source[key]));
+    }
+
+    Object.assign(target || {}, source);
+    return target;
+}
+
 async function validate(router: Router, services: any, schema: any, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
         const oas = await getOas(services, schema);
@@ -125,6 +134,7 @@ export default {
                             swagger.tags.push(tag);
                         }
                     }
+                    if (config?.components) swagger.components = merge(swagger.components, config.components);
                 } catch (e) {
                     logger.info('No custom definitions');
                 }
