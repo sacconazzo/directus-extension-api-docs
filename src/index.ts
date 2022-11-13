@@ -21,7 +21,7 @@ let oas: string;
 
 function getConfig(): oasconfig {
     try {
-        return require(path.join(directusDir, './extensions/endpoints/oasconfig.json'));
+        return require(path.join(directusDir, './extensions/endpoints/oasconfig.js'));
     } catch (e) {
         return {};
     }
