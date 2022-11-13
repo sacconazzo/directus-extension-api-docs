@@ -43,13 +43,11 @@ async function getOas(services: any, schema: any): Promise<any> {
     return JSON.parse(oas);
 }
 
-function merge(target: any, source: any) {
-    for (const key of Object.keys(source)) {
-        if (source[key] instanceof Object) Object.assign(source[key], merge(target[key], source[key]));
-    }
-
-    Object.assign(target || {}, source);
-    return target;
+function merge(a: any, b: any) {
+    return Object.entries(b).reduce((o, [k, v]) => {
+        o[k] = v && typeof v === 'object' ? merge((o[k] = o[k] || (Array.isArray(v) ? [] : {})), v) : v;
+        return o;
+    }, a);
 }
 
 async function validate(router: Router, services: any, schema: any, paths: Array<string>): Promise<Router> {
