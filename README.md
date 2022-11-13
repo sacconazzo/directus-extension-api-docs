@@ -26,16 +26,16 @@ Create a `oasconfig.js` file under `/extensions/endpoints` folder.
 
 Options:
 
--   `docsPath` path where the interface will be
--   `tags` openapi custom tags
--   `paths` openapi custom paths
--   `components` openapi custom components (you can ref to directus standard components declaring them empty)
+-   `docsPath` _optional_ path where the interface will be (default 'api-docs')
+-   `tags` _optional_ openapi custom tags
+-   `paths` _optional_ openapi custom paths
+-   `components` _optional_ openapi custom components (you can ref to directus standard components declaring them empty)
 
 Example below:
 
 ```
 module.exports = {
-    docsPath: 'api-docs', // optional default 'api-docs'
+    docsPath: 'api-docs'
     tags: [
         {
             name: 'MyCustomTag',
@@ -101,7 +101,7 @@ You can enable a request validations middleware based on your custom definitions
 
 Call `validate` function inside your custom endpoint registration.
 
-Pass your `router`, `services`, `schema` and (_optional_) a list of endpoints you want to validate.
+Pass your `router`, `services`, `schema` and a list (_optional_) of endpoints you want to validate.
 
 Example below:
 
