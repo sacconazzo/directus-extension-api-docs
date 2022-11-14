@@ -1,5 +1,7 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
-import { Router, Request, Response } from 'express';
+import { SchemaOverview } from '@directus/shared/types';
+import { Router, Request, Response, NextFunction } from 'express';
+
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
 const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
@@ -17,7 +19,19 @@ interface oasconfig {
     };
 }
 
-let oas: string;
+interface oas {
+    info: any;
+    docsPath: string;
+    tags: Array<any>;
+    paths: {
+        [key: string]: any;
+    };
+    components: {
+        [key: string]: any;
+    };
+}
+
+let oasBuffer: string;
 
 function getConfig(): oasconfig {
     try {
@@ -29,8 +43,8 @@ function getConfig(): oasconfig {
 
 const config = getConfig();
 
-async function getOas(services: any, schema: any): Promise<any> {
-    if (oas) return JSON.parse(oas);
+async function getOas(services: any, schema: SchemaOverview): Promise<oas> {
+    if (oasBuffer) return JSON.parse(oasBuffer);
 
     const { SpecificationService } = services;
     const service = new SpecificationService({
@@ -38,9 +52,9 @@ async function getOas(services: any, schema: any): Promise<any> {
         schema,
     });
 
-    oas = JSON.stringify(await service.oas.generate());
+    oasBuffer = JSON.stringify(await service.oas.generate());
 
-    return JSON.parse(oas);
+    return JSON.parse(oasBuffer);
 }
 
 function merge(a: any, b: any) {
@@ -80,7 +94,7 @@ async function validate(router: Router, services: any, schema: any, paths: Array
                 apiSpec: oas,
             }),
         );
-        router.use((err: any, _req: Request, res: Response, _next: any) => {
+        router.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
             res.status(err.status || 500).json({
                 message: err.message,
                 errors: err.errors,
@@ -107,7 +121,7 @@ export default {
         router.use('/', swaggerUi.serve);
         router.get('/', swaggerUi.setup({}, options));
 
-        router.get('/oas', async (_req: any, res: any, next: any) => {
+        router.get('/oas', async (_req: Request, res: Response, next: NextFunction) => {
             try {
                 const schema = await getSchema();
                 const swagger = await getOas(services, schema);
