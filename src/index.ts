@@ -1,68 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineEndpoint } from '@directus/extensions-sdk';
-import { SchemaOverview } from '@directus/shared/types';
 import { Router, Request, Response, NextFunction } from 'express';
+import { getConfig, getOas, merge } from './utils';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
 const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
-const path = require('path');
-const directusDir = process.cwd();
-
-interface oasconfig {
-    docsPath?: string;
-    tags?: Array<object>;
-    paths?: {
-        [key: string]: object;
-    };
-    components?: {
-        [key: string]: object;
-    };
-}
-
-interface oas {
-    info: any;
-    docsPath: string;
-    tags: Array<any>;
-    paths: {
-        [key: string]: any;
-    };
-    components: {
-        [key: string]: any;
-    };
-}
-
-let oasBuffer: string;
-
-function getConfig(): oasconfig {
-    try {
-        return require(path.join(directusDir, './extensions/endpoints/oasconfig.js'));
-    } catch (e) {
-        return {};
-    }
-}
 
 const config = getConfig();
 
-async function getOas(services: any, schema: SchemaOverview): Promise<oas> {
-    if (oasBuffer) return JSON.parse(oasBuffer);
-
-    const { SpecificationService } = services;
-    const service = new SpecificationService({
-        accountability: { admin: true }, // null or accountability.admin = true needed
-        schema,
-    });
-
-    oasBuffer = JSON.stringify(await service.oas.generate());
-
-    return JSON.parse(oasBuffer);
-}
-
-function merge(a: any, b: any) {
-    return Object.entries(b).reduce((o, [k, v]) => {
-        o[k] = v && typeof v === 'object' ? merge((o[k] = o[k] || (Array.isArray(v) ? [] : {})), v) : v;
-        return o;
-    }, a);
-}
+const id = config?.docsPath || 'api-docs';
 
 async function validate(router: Router, services: any, schema: any, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
@@ -103,8 +50,6 @@ async function validate(router: Router, services: any, schema: any, paths: Array
     }
     return router;
 }
-
-const id = config?.docsPath || 'api-docs';
 
 export default {
     id,
