@@ -23,7 +23,7 @@ export function getConfig(): oasconfig {
                 const oas = yaml.load(fs.readFileSync(oasPath, { encoding: 'utf-8' }));
                 config.tags = [...config.tags, ...oas.tags];
                 config.paths = { ...config.paths, ...oas.paths };
-                config.components = merge(config.components, oas.components);
+                config.components = merge(config.components || {}, oas.components || {});
             }
         }
         return config;
