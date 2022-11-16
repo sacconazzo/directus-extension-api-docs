@@ -55,7 +55,7 @@ components:
 
 ## Definitions (optional)
 
-For each custom endpoints group, you can define openapi including a file `oas.yaml` on root of your group folder.
+For each custom endpoints group, you can define openapi including a file `oas.yaml` in root path of your group folder.
 
 Properties:
 
@@ -88,7 +88,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/User" // you can ref to standard components
+                "$ref": "#/components/schemas/User"
         '401':
           description: Unauthorized
           content: {}
@@ -98,6 +98,10 @@ paths:
         '500':
           description: Server Error
           content: {}
+components:
+  schemas:
+    Users:
+      type: object   # you can ref to standard components declaring it empty
 ```
 
 ## Validations (optional)

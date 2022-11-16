@@ -11,7 +11,7 @@ let oasBuffer: string;
 
 export function getConfig(): oasconfig {
     try {
-        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.json');
+        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.yaml');
         const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
 
         const endpointsPath = path.join(directusDir, './extensions/endpoints');
@@ -23,7 +23,7 @@ export function getConfig(): oasconfig {
                 const oas = yaml.load(fs.readFileSync(oasPath, { encoding: 'utf-8' }));
                 config.tags = [...config.tags, ...oas.tags];
                 config.paths = { ...config.paths, ...oas.paths };
-                config.components = { ...config.components, ...oas.components };
+                config.components = merge(config.components, oas.components);
             }
         }
         return config;
