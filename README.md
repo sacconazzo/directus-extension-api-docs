@@ -22,77 +22,82 @@ Ref: https://github.com/directus/directus
 
 For include you custom endpoints.
 
-Create a `oasconfig.js` file under `/extensions/endpoints` folder.
+Create a `oasconfig.yaml` file under `/extensions/endpoints` folder.
 
 Options:
 
 -   `docsPath` _optional_ path where the interface will be (default 'api-docs')
--   `tags` _optional_ openapi custom tags
--   `paths` _optional_ openapi custom paths
--   `components` _optional_ openapi custom components (you can ref to directus standard components declaring them empty)
+-   `tags` _optional_ openapi custom tags (will be merged with all standard and all customs tags)
+-   `paths` _optional_ openapi custom paths (will be merged with all standard and all customs paths)
+-   `components` _optional_ openapi custom components (will be merged with all standard and all customs tags)
 
 Example below:
 
 ```
-module.exports = {
-    docsPath: 'api-docs'
-    tags: [
-        {
-            name: 'MyCustomTag',
-            description: 'MyCustomTag description',
-        },
-    ],
-    paths: {
-        '/my-custom-path/my-endpoint': {
-            post: {
-                summary: 'do something',
-                description: 'do something',
-                requestBody: {
-                    content: {
-                        'application/json': {
-                            schema: {
-                                type: 'object',
-                                required: ['field'],
-                                properties: {
-                                    field: {
-                                        type: 'string',
-                                    },
-                                },
-                            },
-                        },
-                    },
-                    responses: {
-                        '200': {
-                            description: 'Successful request',
-                            content: {
-                                'application/json': {
-                                    schema: {
-                                        type: 'object',
-                                        properties: {
-                                            field: {
-                                                type: 'string',
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                        '401': {
-                            description: 'Unauthorized',
-                            content: {},
-                        },
-                        '404': {
-                            description: 'Not Found',
-                            content: {},
-                        },
-                    },
-                    tags: ['MyCustomTag', 'Assets'],
-                },
-            },
-        },
-    },
-    components: {},
-};
+docsPath: 'api-docs'
+tags:
+- name: MyCustomTag
+  description: MyCustomTag description
+components:
+  schemas:
+    UserId:
+      type: object
+      required:
+      - user_id
+      x-collection: directus_users
+      properties:
+        user_id:
+          description: Unique identifier for the user.
+          example: 63716273-0f29-4648-8a2a-2af2948f6f78
+          type: string
+
+```
+
+## Definitions (optional)
+
+For each custom endpoints group, you can define openapi including a file `oas.yaml` on root of your group folder.
+
+Properties:
+
+-   `tags` _optional_ openapi custom tags
+-   `paths` _optional_ openapi custom paths
+-   `components` _optional_ openapi custom components
+
+Exemple below (`./extensions/endpoints/my-custom-path/oas.yaml`) :
+
+```
+tags:
+- name: MyCustomTag2
+  description: MyCustomTag description2
+paths:
+  "/my-custom-path/my-endpoint":
+    post:
+      summary: Validate email
+      description: Validate email
+      tags:
+        - MyCustomTag2
+        - MyCustomTag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Users"
+      responses:
+        '200':
+          description: Successful request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User" // you can ref to standard components
+        '401':
+          description: Unauthorized
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+        '500':
+          description: Server Error
+          content: {}
 ```
 
 ## Validations (optional)

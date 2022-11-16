@@ -1,13 +1,32 @@
 import { SchemaOverview } from '@directus/shared/types';
 import { oas, oasconfig } from './types';
+
+const yaml = require('js-yaml');
 const path = require('path');
+const fs = require('fs');
+
 const directusDir = process.cwd();
 
 let oasBuffer: string;
 
 export function getConfig(): oasconfig {
     try {
-        return require(path.join(directusDir, './extensions/endpoints/oasconfig.js'));
+        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.json');
+        const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
+
+        const endpointsPath = path.join(directusDir, './extensions/endpoints');
+        const files = fs.readdirSync(endpointsPath, { withFileTypes: true });
+
+        for (const file of files) {
+            const oasPath = `${endpointsPath}/${file.name}/oas.yaml`;
+            if (file.isDirectory() && fs.existsSync(oasPath)) {
+                const oas = yaml.load(fs.readFileSync(oasPath, { encoding: 'utf-8' }));
+                config.tags = [...config.tags, ...oas.tags];
+                config.paths = { ...config.paths, ...oas.paths };
+                config.components = { ...config.components, ...oas.components };
+            }
+        }
+        return config;
     } catch (e) {
         return {};
     }
