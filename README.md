@@ -101,7 +101,7 @@ paths:
 components:
   schemas:
     Users:
-      type: object   # you can ref to standard components declaring it empty
+      type: object # ref to standard components declaring it empty
 ```
 
 ## Validations (optional)
@@ -124,7 +124,7 @@ module.exports = {
     handler: async function registerEndpoint(router, { services, getSchema }) {
 
         const schema = await getSchema();
-        await validate(router, services, schema); // Enable validator for custom endpoints
+        await validate(router, services, schema); // Enable validator
 
         router.post('/my-endpoint', async (req, res, next) => {
             ...
