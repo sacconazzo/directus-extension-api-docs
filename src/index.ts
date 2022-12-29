@@ -2,6 +2,7 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { Router, Request, Response, NextFunction } from 'express';
 import { getConfig, getOas, merge } from './utils';
+import { SchemaOverview } from '@directus/shared/types';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
@@ -11,7 +12,7 @@ const config = getConfig();
 
 const id = config?.docsPath || 'api-docs';
 
-async function validate(router: Router, services: any, schema: any, paths: Array<string>): Promise<Router> {
+async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
         const oas = await getOas(services, schema);
 
@@ -71,11 +72,13 @@ export default {
                 const schema = await getSchema();
                 const swagger = await getOas(services, schema);
 
-                const pkg = require(`${await findWorkspaceDir('.')}/package.json`);
+                try {
+                    const pkg = require(`${await findWorkspaceDir('.')}/package.json`);
 
-                swagger.info.title = pkg.name;
-                swagger.info.version = pkg.version;
-                swagger.info.description = pkg.description;
+                    if (pkg?.name) swagger.info.title = pkg?.name;
+                    if (pkg?.version) swagger.info.version = pkg?.version;
+                    if (pkg?.description) swagger.info.description = pkg?.description;
+                } catch (e) {}
 
                 // inject custom-endpoints
                 try {
