@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineEndpoint } from '@directus/extensions-sdk';
+import { SchemaOverview } from '@directus/shared/types';
 import { Router, Request, Response, NextFunction } from 'express';
 import { getConfig, getOas, merge } from './utils';
-import { SchemaOverview } from '@directus/shared/types';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
