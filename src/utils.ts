@@ -21,6 +21,7 @@ function getConfigRoot(): oas {
         const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.yaml');
         const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
         config.docsPath = config.docsPath || defConfig.docsPath;
+        config.info = config.info || defConfig.info;
         config.tags = config.tags || defConfig.tags;
         config.paths = config.paths || defConfig.paths;
         config.components = config.components || defConfig.components;
