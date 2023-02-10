@@ -1,5 +1,5 @@
 import { SchemaOverview } from '@directus/shared/types';
-import { oas, oasconfig } from './types';
+import { oas } from './types';
 
 const yaml = require('js-yaml');
 const path = require('path');
@@ -9,9 +9,10 @@ const directusDir = process.cwd();
 
 let oasBuffer: string;
 
-function getConfigRoot(): oasconfig {
-    const defConfig: oasconfig = {
+function getConfigRoot(): oas {
+    const defConfig: oas = {
         docsPath: 'api-docs',
+        info: {},
         tags: [],
         paths: {},
         components: {},
@@ -29,7 +30,7 @@ function getConfigRoot(): oasconfig {
     }
 }
 
-export function getConfig(): oasconfig {
+export function getConfig(): oas {
     const config = getConfigRoot();
     try {
         const endpointsPath = path.join(directusDir, './extensions/endpoints');

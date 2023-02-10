@@ -16,6 +16,7 @@ describe('getConfig sample test', () => {
     test('should be an empty object', async () => {
         const test = getConfig();
         expect(test).toHaveProperty('docsPath');
+        expect(test).toHaveProperty('info');
         expect(test).toHaveProperty('tags');
         expect(test).toHaveProperty('paths');
         expect(test).toHaveProperty('components');
