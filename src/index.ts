@@ -10,7 +10,7 @@ const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
 
 const config = getConfig();
 
-const id = config?.docsPath || 'api-docs';
+const id = config.docsPath;
 
 async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
     if (config?.paths) {

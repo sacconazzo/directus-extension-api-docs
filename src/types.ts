@@ -1,7 +1,7 @@
 export interface oasconfig {
-    docsPath?: string;
-    tags?: Array<object>;
-    paths?: {
+    docsPath: string;
+    tags: Array<object>;
+    paths: {
         [key: string]: object;
     };
     components?: {

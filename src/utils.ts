@@ -9,11 +9,29 @@ const directusDir = process.cwd();
 
 let oasBuffer: string;
 
-export function getConfig(): oasconfig {
+function getConfigRoot(): oasconfig {
+    const defConfig: oasconfig = {
+        docsPath: 'api-docs',
+        tags: [],
+        paths: {},
+        components: {},
+    };
     try {
         const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.yaml');
         const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
+        config.docsPath = config.docsPath || defConfig.docsPath;
+        config.tags = config.tags || defConfig.tags;
+        config.paths = config.paths || defConfig.paths;
+        config.components = config.components || defConfig.components;
+        return config;
+    } catch {
+        return defConfig;
+    }
+}
 
+export function getConfig(): oasconfig {
+    const config = getConfigRoot();
+    try {
         const endpointsPath = path.join(directusDir, './extensions/endpoints');
         const files = fs.readdirSync(endpointsPath, { withFileTypes: true });
 
@@ -28,7 +46,7 @@ export function getConfig(): oasconfig {
         }
         return config;
     } catch (e) {
-        return {};
+        return config;
     }
 }
 
