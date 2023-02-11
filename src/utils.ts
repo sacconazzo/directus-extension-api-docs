@@ -1,6 +1,7 @@
 import { SchemaOverview } from '@directus/shared/types';
 import { oas } from './types';
 
+const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
 const yaml = require('js-yaml');
 const path = require('path');
 const fs = require('fs');
@@ -64,6 +65,15 @@ export async function getOas(services: any, schema: SchemaOverview): Promise<oas
     oasBuffer = JSON.stringify(await service.oas.generate());
 
     return JSON.parse(oasBuffer);
+}
+
+export async function getPackage() {
+    try {
+        const workspaceDir = await findWorkspaceDir('.');
+        return require(`${workspaceDir || directusDir()}/package.json`);
+    } catch (e) {
+        return {};
+    }
 }
 
 export function merge(a: any, b: any) {

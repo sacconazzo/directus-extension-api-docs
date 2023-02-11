@@ -2,11 +2,10 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { SchemaOverview } from '@directus/shared/types';
 import { Router, Request, Response, NextFunction } from 'express';
-import { getConfig, getOas, merge } from './utils';
+import { getConfig, getOas, getPackage, merge } from './utils';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
-const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
 
 const config = getConfig();
 
@@ -72,27 +71,23 @@ export default {
                 const schema = await getSchema();
                 const swagger = await getOas(services, schema);
 
-                try {
-                    const pkg = require(`${await findWorkspaceDir('.')}/package.json`);
+                const pkg = await getPackage();
 
-                    swagger.info.title = config.info.title || pkg?.name || swagger.info.title;
-                    swagger.info.version = config.info.version || pkg?.version || swagger.info.version;
-                    swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
-                } catch (e) {}
+                swagger.info.title = config.info.title || pkg?.name || swagger.info.title;
+                swagger.info.version = config.info.version || pkg?.version || swagger.info.version;
+                swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
 
                 // inject custom-endpoints
                 try {
-                    if (config?.paths) {
-                        for (const path in config.paths) {
-                            swagger.paths[path] = config.paths[path];
-                        }
+                    for (const path in config.paths) {
+                        swagger.paths[path] = config.paths[path];
                     }
-                    if (config?.tags) {
-                        for (const tag of config.tags) {
-                            swagger.tags.push(tag);
-                        }
+
+                    for (const tag of config.tags) {
+                        swagger.tags.push(tag);
                     }
-                    if (config?.components) swagger.components = merge(config.components, swagger.components);
+
+                    swagger.components = merge(config.components, swagger.components);
                 } catch (e) {
                     logger.info('No custom definitions');
                 }
