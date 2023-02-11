@@ -5,7 +5,7 @@ const yaml = require('js-yaml');
 const path = require('path');
 const fs = require('fs');
 
-const directusDir = process.cwd();
+const directusDir = () => process.cwd();
 
 let oasBuffer: string;
 
@@ -18,7 +18,7 @@ function getConfigRoot(): oas {
         components: {},
     };
     try {
-        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.yaml');
+        const configFile = path.join(directusDir(), './extensions/endpoints/oasconfig.yaml');
         const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
         config.docsPath = config.docsPath || defConfig.docsPath;
         config.info = config.info || defConfig.info;
@@ -34,7 +34,7 @@ function getConfigRoot(): oas {
 export function getConfig(): oas {
     const config = getConfigRoot();
     try {
-        const endpointsPath = path.join(directusDir, './extensions/endpoints');
+        const endpointsPath = path.join(directusDir(), './extensions/endpoints');
         const files = fs.readdirSync(endpointsPath, { withFileTypes: true });
 
         for (const file of files) {
