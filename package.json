@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "1.4.7",
+    "version": "1.5.0",
     "description": "directus extension for swagger interface and custom endpoints definitions",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -46,7 +46,7 @@
         "@types/node": "^18.13.0",
         "@typescript-eslint/eslint-plugin": "^5.51.0",
         "@typescript-eslint/parser": "^5.51.0",
-        "eslint": "^8.33.0",
+        "eslint": "^8.34.0",
         "eslint-config-prettier": "^8.6.0",
         "eslint-plugin-import": "^2.27.5",
         "eslint-plugin-prettier": "^4.2.1",

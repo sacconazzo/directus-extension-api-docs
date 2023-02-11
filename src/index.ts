@@ -75,9 +75,9 @@ export default {
                 try {
                     const pkg = require(`${await findWorkspaceDir('.')}/package.json`);
 
-                    if (pkg?.name) swagger.info.title = pkg?.name;
-                    if (pkg?.version) swagger.info.version = pkg?.version;
-                    if (pkg?.description) swagger.info.description = pkg?.description;
+                    swagger.info.title = config.info.title || pkg?.name || swagger.info.title;
+                    swagger.info.version = config.info.version || pkg?.version || swagger.info.version;
+                    swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
                 } catch (e) {}
 
                 // inject custom-endpoints

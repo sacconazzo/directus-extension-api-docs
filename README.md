@@ -27,6 +27,7 @@ Create a `oasconfig.yaml` file under `/extensions/endpoints` folder.
 Options:
 
 -   `docsPath` _optional_ path where the interface will be (default 'api-docs')
+-   `info` _optional_ openapi server info (default extract from package.json)
 -   `tags` _optional_ openapi custom tags (will be merged with all standard and all customs tags)
 -   `paths` _optional_ openapi custom paths (will be merged with all standard and all customs paths)
 -   `components` _optional_ openapi custom components (will be merged with all standard and all customs tags)
@@ -35,6 +36,10 @@ Example below:
 
 ```
 docsPath: 'api-docs'
+info:
+  title: my-directus-bo
+  version: 1.5.0
+  description: my server description
 tags:
 - name: MyCustomTag
   description: MyCustomTag description

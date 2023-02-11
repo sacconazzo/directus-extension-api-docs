@@ -1,25 +1,27 @@
 import { SchemaOverview } from '@directus/shared/types';
-import { oas, oasconfig } from './types';
+import { oas } from './types';
 
 const yaml = require('js-yaml');
 const path = require('path');
 const fs = require('fs');
 
-const directusDir = process.cwd();
+const directusDir = () => process.cwd();
 
 let oasBuffer: string;
 
-function getConfigRoot(): oasconfig {
-    const defConfig: oasconfig = {
+function getConfigRoot(): oas {
+    const defConfig: oas = {
         docsPath: 'api-docs',
+        info: {},
         tags: [],
         paths: {},
         components: {},
     };
     try {
-        const configFile = path.join(directusDir, './extensions/endpoints/oasconfig.yaml');
+        const configFile = path.join(directusDir(), './extensions/endpoints/oasconfig.yaml');
         const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
         config.docsPath = config.docsPath || defConfig.docsPath;
+        config.info = config.info || defConfig.info;
         config.tags = config.tags || defConfig.tags;
         config.paths = config.paths || defConfig.paths;
         config.components = config.components || defConfig.components;
@@ -29,10 +31,10 @@ function getConfigRoot(): oasconfig {
     }
 }
 
-export function getConfig(): oasconfig {
+export function getConfig(): oas {
     const config = getConfigRoot();
     try {
-        const endpointsPath = path.join(directusDir, './extensions/endpoints');
+        const endpointsPath = path.join(directusDir(), './extensions/endpoints');
         const files = fs.readdirSync(endpointsPath, { withFileTypes: true });
 
         for (const file of files) {

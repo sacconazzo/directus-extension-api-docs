@@ -1,0 +1,29 @@
+tags:
+- name: Constants
+  description: list of constants
+paths:
+  "/mypath/countries_ext":
+    get:
+      summary: List of countries detailed
+      description: List of countries detailed with dialcode and translations
+      tags:
+        - Constants
+      responses:
+        '200':
+          description: Ok
+          content: {}
+        '401':
+          description: Unauthorized
+          content: {}
+        '403':
+          description: Forbidden
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+        '500':
+          description: Server Error
+          content: {}
