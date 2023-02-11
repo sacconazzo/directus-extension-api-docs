@@ -24,7 +24,7 @@ describe('openapi config generation', () => {
 
     test('should merge with oasconfig', async () => {
         jest.spyOn(process, 'cwd').mockImplementation(() => {
-            return './tests/mock/oasconfig';
+            return './tests/mocks/oasconfig';
         });
         const test = getConfig();
         expect(test).toHaveProperty('docsPath');
@@ -38,7 +38,7 @@ describe('openapi config generation', () => {
 
     test('should merge with custom oas', async () => {
         jest.spyOn(process, 'cwd').mockImplementation(() => {
-            return './tests/mock/customoas';
+            return './tests/mocks/customoas';
         });
         const test = getConfig();
         expect(test).toHaveProperty('docsPath');
@@ -50,7 +50,7 @@ describe('openapi config generation', () => {
 
     test('should merge with config and custom oas', async () => {
         jest.spyOn(process, 'cwd').mockImplementation(() => {
-            return './tests/mock/merge';
+            return './tests/mocks/merge';
         });
         const test = getConfig();
         expect(test).toHaveProperty('docsPath');
