@@ -1,4 +1,4 @@
-import { getConfig } from '../src/utils';
+import { getConfig, getPackage } from '../src/utils';
 
 describe('openapi config generation', () => {
     afterAll(async () => {
@@ -9,8 +9,9 @@ describe('openapi config generation', () => {
         //
     });
 
-    beforeEach(() => {
-        //
+    afterEach(() => {
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
 
     test('should be an empty object', async () => {
@@ -59,5 +60,14 @@ describe('openapi config generation', () => {
         expect(test).toHaveProperty('components');
         expect(test.paths).toHaveProperty('/mypath/countries');
         expect(test.paths).toHaveProperty('/mypath2/countries_ext');
+    });
+});
+
+describe('getPackage', () => {
+    test('should be valid', async () => {
+        const test = await getPackage();
+        expect(test).toHaveProperty('name');
+        expect(test).toHaveProperty('version');
+        expect(test).toHaveProperty('description');
     });
 });
