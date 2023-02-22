@@ -15,6 +15,7 @@ function getConfigRoot(): oas {
         docsPath: 'api-docs',
         info: {},
         tags: [],
+        includedTags: [],
         paths: {},
         components: {},
     };
