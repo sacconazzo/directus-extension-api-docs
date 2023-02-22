@@ -61,6 +61,14 @@ describe('openapi config generation', () => {
         expect(test.paths).toHaveProperty('/mypath/countries');
         expect(test.paths).toHaveProperty('/mypath2/countries_ext');
     });
+
+    test('should include only selected paths', async () => {
+        jest.spyOn(process, 'cwd').mockImplementation(() => {
+            return './tests/mocks/excluding';
+        });
+        const test = getConfig();
+        expect(test).toHaveProperty('info');
+    });
 });
 
 describe('getPackage', () => {
