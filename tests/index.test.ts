@@ -85,7 +85,7 @@ describe('filterPaths', () => {
         };
         const oas: oas = {
             info: {},
-            tags: [],
+            tags: [{ name: 'tag1' }, { name: 'tag2' }],
             components: {},
             paths: {
                 endpoint1: {
@@ -107,5 +107,7 @@ describe('filterPaths', () => {
         expect(oas.paths.endpoint1).toHaveProperty('post');
         expect(oas.paths.endpoint2?.get).toBeUndefined();
         expect(oas.paths.endpoint2?.post).toBeUndefined();
+        expect(oas.tags.length).toEqual(1);
+        expect(oas.tags[0].name).toEqual('tag2');
     });
 });

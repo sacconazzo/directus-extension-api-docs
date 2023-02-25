@@ -43,6 +43,7 @@ export function filterPaths(config: oasConfig, oas: oas) {
             if (!published) delete oas.paths[path]?.[method];
         }
     }
+    oas.tags = oas.tags.filter(tag => config.publishedTags.includes(tag.name));
 }
 
 export function getConfig(): oasConfig {
