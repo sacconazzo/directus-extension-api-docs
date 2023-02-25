@@ -1,4 +1,5 @@
-import { getConfig, getPackage } from '../src/utils';
+import { oasConfig, oas } from '../src/types';
+import { getConfig, getPackage, filterPaths } from '../src/utils';
 
 describe('openapi config generation', () => {
     afterAll(async () => {
@@ -61,14 +62,6 @@ describe('openapi config generation', () => {
         expect(test.paths).toHaveProperty('/mypath/countries');
         expect(test.paths).toHaveProperty('/mypath2/countries_ext');
     });
-
-    test('should include only selected paths', async () => {
-        jest.spyOn(process, 'cwd').mockImplementation(() => {
-            return './tests/mocks/excluding';
-        });
-        const test = getConfig();
-        expect(test).toHaveProperty('info');
-    });
 });
 
 describe('getPackage', () => {
@@ -77,5 +70,34 @@ describe('getPackage', () => {
         expect(test).toHaveProperty('name');
         expect(test).toHaveProperty('version');
         expect(test).toHaveProperty('description');
+    });
+});
+
+describe('filterPaths', () => {
+    test('should be valid', () => {
+        const oasConfig: oasConfig = {
+            docsPath: 'api-docs',
+            info: {},
+            tags: [],
+            components: {},
+            publishedTags: ['tag2'],
+            paths: {},
+        };
+        const oas: oas = {
+            info: {},
+            tags: [],
+            components: {},
+            paths: {
+                endpoint1: {
+                    tags: ['tag1', 'tag2'],
+                },
+                endpoint2: {
+                    tags: ['tag1', 'tag3'],
+                },
+            },
+        };
+        filterPaths(oasConfig, oas);
+        expect(oas.paths).toHaveProperty('endpoint1');
+        expect(oas.paths['endpoint2']).toBeUndefined();
     });
 });
