@@ -35,12 +35,13 @@ function getConfigRoot(): oasConfig {
 
 export function filterPaths(config: oasConfig, oas: oas) {
     for (const path in oas.paths) {
-        console.log(path);
-        let published = false;
-        oas.paths[path]?.tags.forEach(tag => {
-            published = published || config.publishedTags.includes(tag);
-        });
-        if (!published) delete oas.paths[path];
+        for (const method in oas.paths[path]) {
+            let published = false;
+            oas.paths[path]?.[method]?.tags.forEach(tag => {
+                published = published || config.publishedTags.includes(tag);
+            });
+            if (!published) delete oas.paths[path]?.[method];
+        }
     }
 }
 

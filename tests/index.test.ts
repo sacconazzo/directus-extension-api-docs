@@ -89,15 +89,23 @@ describe('filterPaths', () => {
             components: {},
             paths: {
                 endpoint1: {
-                    tags: ['tag1', 'tag2'],
+                    get: {
+                        tags: ['tag1', 'tag2'],
+                    },
+                    post: {
+                        tags: ['tag1', 'tag2'],
+                    },
                 },
                 endpoint2: {
-                    tags: ['tag1', 'tag3'],
+                    get: { tags: ['tag1', 'tag3'] },
+                    post: { tags: ['tag1', 'tag3'] },
                 },
             },
         };
         filterPaths(oasConfig, oas);
-        expect(oas.paths).toHaveProperty('endpoint1');
-        expect(oas.paths['endpoint2']).toBeUndefined();
+        expect(oas.paths.endpoint1).toHaveProperty('get');
+        expect(oas.paths.endpoint1).toHaveProperty('post');
+        expect(oas.paths.endpoint2?.get).toBeUndefined();
+        expect(oas.paths.endpoint2?.post).toBeUndefined();
     });
 });
