@@ -105,6 +105,8 @@ describe('filterPaths', () => {
         filterPaths(oasConfig, oas);
         expect(oas.paths.endpoint1).toHaveProperty('get');
         expect(oas.paths.endpoint1).toHaveProperty('post');
+        expect(oas.paths.endpoint1?.get?.tags.length).toEqual(1);
+        expect(oas.paths.endpoint1?.post?.tags.length).toEqual(1);
         expect(oas.paths.endpoint2?.get).toBeUndefined();
         expect(oas.paths.endpoint2?.post).toBeUndefined();
         expect(oas.tags.length).toEqual(1);

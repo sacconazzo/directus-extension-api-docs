@@ -16,7 +16,9 @@ export interface oas {
     tags: Array<any>;
     paths: {
         [key: string]: {
-            [key: string]: { tags: Array<string> };
+            [key: string]: {
+                tags: Array<string>;
+            };
         };
     };
     components: {

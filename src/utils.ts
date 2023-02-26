@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { SchemaOverview } from '@directus/shared/types';
 import { oas, oasConfig } from './types';
 
@@ -37,10 +38,17 @@ export function filterPaths(config: oasConfig, oas: oas) {
     for (const path in oas.paths) {
         for (const method in oas.paths[path]) {
             let published = false;
-            oas.paths[path]?.[method]?.tags.forEach(tag => {
+
+            // @ts-ignore
+            oas.paths[path][method].tags.forEach(tag => {
                 published = published || config.publishedTags.includes(tag);
             });
-            if (!published) delete oas.paths[path]?.[method];
+
+            // @ts-ignore
+            if (oas.paths[path][method].tags) oas.paths[path][method]['tags'] = oas.paths[path][method].tags.filter(tag => config.publishedTags.includes(tag));
+
+            // @ts-ignore
+            if (!published) delete oas.paths[path][method];
         }
     }
     oas.tags = oas.tags.filter(tag => config.publishedTags.includes(tag.name));
