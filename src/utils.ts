@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { SchemaOverview } from '@directus/shared/types';
-import { oas } from './types';
+import { oas, oasConfig } from './types';
 
 const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
 const yaml = require('js-yaml');
@@ -10,11 +11,12 @@ const directusDir = () => process.cwd();
 
 let oasBuffer: string;
 
-function getConfigRoot(): oas {
-    const defConfig: oas = {
+function getConfigRoot(): oasConfig {
+    const defConfig: oasConfig = {
         docsPath: 'api-docs',
         info: {},
         tags: [],
+        publishedTags: [],
         paths: {},
         components: {},
     };
@@ -32,7 +34,27 @@ function getConfigRoot(): oas {
     }
 }
 
-export function getConfig(): oas {
+export function filterPaths(config: oasConfig, oas: oas) {
+    for (const path in oas.paths) {
+        for (const method in oas.paths[path]) {
+            let published = false;
+
+            // @ts-ignore
+            oas.paths[path][method].tags.forEach(tag => {
+                published = published || config.publishedTags.includes(tag);
+            });
+
+            // @ts-ignore
+            if (oas.paths[path][method].tags) oas.paths[path][method]['tags'] = oas.paths[path][method].tags.filter(tag => config.publishedTags.includes(tag));
+
+            // @ts-ignore
+            if (!published) delete oas.paths[path][method];
+        }
+    }
+    oas.tags = oas.tags.filter(tag => config.publishedTags.includes(tag.name));
+}
+
+export function getConfig(): oasConfig {
     const config = getConfigRoot();
     try {
         const endpointsPath = path.join(directusDir(), './extensions/endpoints');
