@@ -29,6 +29,7 @@ Options:
 -   `docsPath` _optional_ path where the interface will be (default 'api-docs')
 -   `info` _optional_ openapi server info (default extract from package.json)
 -   `tags` _optional_ openapi custom tags (will be merged with all standard and all customs tags)
+-   `publishedTags` _optional_ if specified, will be published definitions only for specified tags
 -   `paths` _optional_ openapi custom paths (will be merged with all standard and all customs paths)
 -   `components` _optional_ openapi custom components (will be merged with all standard and all customs tags)
 
@@ -43,6 +44,8 @@ info:
 tags:
 - name: MyCustomTag
   description: MyCustomTag description
+publishedTags:
+- MyCustomTag
 components:
   schemas:
     UserId:

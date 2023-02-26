@@ -2,7 +2,7 @@
 import { defineEndpoint } from '@directus/extensions-sdk';
 import { SchemaOverview } from '@directus/shared/types';
 import { Router, Request, Response, NextFunction } from 'express';
-import { getConfig, getOas, getPackage, merge } from './utils';
+import { getConfig, getOas, getPackage, merge, filterPaths } from './utils';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
@@ -91,6 +91,8 @@ export default {
                 } catch (e) {
                     logger.info('No custom definitions');
                 }
+
+                if (config.publishedTags) filterPaths(config, swagger);
 
                 res.json(swagger);
             } catch (error: any) {

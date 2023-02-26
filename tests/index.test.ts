@@ -1,4 +1,5 @@
-import { getConfig, getPackage } from '../src/utils';
+import { oasConfig, oas } from '../src/types';
+import { getConfig, getPackage, filterPaths } from '../src/utils';
 
 describe('openapi config generation', () => {
     afterAll(async () => {
@@ -69,5 +70,46 @@ describe('getPackage', () => {
         expect(test).toHaveProperty('name');
         expect(test).toHaveProperty('version');
         expect(test).toHaveProperty('description');
+    });
+});
+
+describe('filterPaths', () => {
+    test('should be valid', () => {
+        const oasConfig: oasConfig = {
+            docsPath: 'api-docs',
+            info: {},
+            tags: [],
+            components: {},
+            publishedTags: ['tag2'],
+            paths: {},
+        };
+        const oas: oas = {
+            info: {},
+            tags: [{ name: 'tag1' }, { name: 'tag2' }],
+            components: {},
+            paths: {
+                endpoint1: {
+                    get: {
+                        tags: ['tag1', 'tag2'],
+                    },
+                    post: {
+                        tags: ['tag1', 'tag2'],
+                    },
+                },
+                endpoint2: {
+                    get: { tags: ['tag1', 'tag3'] },
+                    post: { tags: ['tag1', 'tag3'] },
+                },
+            },
+        };
+        filterPaths(oasConfig, oas);
+        expect(oas.paths.endpoint1).toHaveProperty('get');
+        expect(oas.paths.endpoint1).toHaveProperty('post');
+        expect(oas.paths.endpoint1?.get?.tags.length).toEqual(1);
+        expect(oas.paths.endpoint1?.post?.tags.length).toEqual(1);
+        expect(oas.paths.endpoint2?.get).toBeUndefined();
+        expect(oas.paths.endpoint2?.post).toBeUndefined();
+        expect(oas.tags.length).toEqual(1);
+        expect(oas.tags[0].name).toEqual('tag2');
     });
 });
