@@ -64,8 +64,8 @@ export function getConfig(): oasConfig {
             const oasPath = `${endpointsPath}/${file.name}/oas.yaml`;
             if (file.isDirectory() && fs.existsSync(oasPath)) {
                 const oas = yaml.load(fs.readFileSync(oasPath, { encoding: 'utf-8' }));
-                config.tags = [...config.tags, ...oas.tags];
-                config.paths = { ...config.paths, ...oas.paths };
+                config.tags = [...config.tags, ...(oas.tags || [])];
+                config.paths = { ...config.paths, ...(oas.paths || {}) };
                 config.components = merge(config.components || {}, oas.components || {});
             }
         }

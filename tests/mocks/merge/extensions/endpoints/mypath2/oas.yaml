@@ -1,6 +1,3 @@
-tags:
-- name: Constants
-  description: list of constants
 paths:
   "/mypath2/countries_ext":
     get:
