@@ -92,7 +92,7 @@ export default {
                     logger.info('No custom definitions');
                 }
 
-                if (config.publishedTags) filterPaths(config, swagger);
+                if (config.publishedTags?.length) filterPaths(config, swagger);
 
                 res.json(swagger);
             } catch (error: any) {
