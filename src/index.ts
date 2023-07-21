@@ -54,9 +54,7 @@ async function validate(router: Router, services: any, schema: SchemaOverview, p
 export default {
     id,
     validate,
-    handler: defineEndpoint((router, { services, exceptions, logger, getSchema }) => {
-        const { ServiceUnavailableException } = exceptions;
-
+    handler: defineEndpoint((router, { services, logger, getSchema }) => {
         const options = {
             swaggerOptions: {
                 url: `/${id}/oas`,
@@ -96,7 +94,7 @@ export default {
 
                 res.json(swagger);
             } catch (error: any) {
-                return next(new ServiceUnavailableException(error.message || error[0].message));
+                return next(new Error(error.message || error[0].message));
             }
         });
     }),
