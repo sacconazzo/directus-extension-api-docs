@@ -40,12 +40,14 @@ export function filterPaths(config: oasConfig, oas: oas) {
             let published = false;
 
             // @ts-ignore
-            oas.paths[path][method].tags.forEach(tag => {
+            const tags = oas.paths[path][method].tags || [];
+
+            tags.forEach(tag => {
                 published = published || config.publishedTags.includes(tag);
             });
 
             // @ts-ignore
-            if (oas.paths[path][method].tags) oas.paths[path][method]['tags'] = oas.paths[path][method].tags.filter(tag => config.publishedTags.includes(tag));
+            oas.paths[path][method].tags = tags.filter(tag => config.publishedTags.includes(tag));
 
             // @ts-ignore
             if (!published) delete oas.paths[path][method];
