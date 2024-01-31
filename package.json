@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "1.7.9",
+    "version": "1.7.10",
     "description": "directus extension for swagger interface and custom endpoints definitions",
     "licence": "MIT",
     "author": "Giona Righini (sacconazzo)",
@@ -36,10 +36,10 @@
         "dev": "directus-extension build -w --no-minify"
     },
     "dependencies": {
-        "@pnpm/find-workspace-dir": "^5.0.1",
-        "express-openapi-validator": "^4.13.8",
+        "@pnpm/find-workspace-dir": "^6.0.2",
+        "express-openapi-validator": "^5.1.3",
         "js-yaml": "^4.1.0",
-        "swagger-ui-express": "^4.6.3"
+        "swagger-ui-express": "^5.0.0"
     },
     "devDependencies": {
         "@directus/extensions-sdk": "^10.3.0",
@@ -57,7 +57,8 @@
         "jest": "^29.7.0",
         "jest-extended": "^3.2.4",
         "openapi-schema-validator": "^12.1.3",
-        "pino": "^8.17.2",
+        "pinia": "^2.1.7",
+        "pino": "^8.17.1",
         "prettier": "^2.8.8",
         "ts-jest": "^29.1.1",
         "ts-node": "^10.9.2",
