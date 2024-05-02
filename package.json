@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "1.9.0",
+    "version": "1.9.1",
     "description": "directus extension for swagger interface and custom endpoints definitions",
     "licence": "MIT",
     "author": "Giona Righini (sacconazzo)",
