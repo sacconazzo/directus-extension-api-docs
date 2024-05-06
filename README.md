@@ -1,6 +1,7 @@
 # directus-extension-api-docs
 
 Directus Extension to include a Swagger interface and custom endpoints definitions
+and data validation based on your definitions
 
 ![workspace](assets/swagger.png)
 
