@@ -1,7 +1,7 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "1.9.2",
-    "description": "directus extension for swagger interface and custom endpoints definitions",
+    "version": "1.9.4",
+    "description": "directus extension for swagger interface and openapi including custom endpoints definitions // custom endpoint validations middleware based on openapi",
     "licence": "MIT",
     "author": "Giona Righini (sacconazzo)",
     "main": "dist/index.js",
