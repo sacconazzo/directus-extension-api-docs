@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 
 const directusDir = () => process.cwd();
+const extensionDir = process.env.EXTENSIONS_PATH || './extensions';
 
 let oasBuffer: string;
 
@@ -21,7 +22,7 @@ function getConfigRoot(): oasConfig {
         components: {},
     };
     try {
-        const configFile = path.join(directusDir(), './extensions/endpoints/oasconfig.yaml');
+        const configFile = path.join(directusDir(), extensionDir, '/endpoints/oasconfig.yaml');
         const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
         config.docsPath = config.docsPath || defConfig.docsPath;
         config.info = config.info || defConfig.info;
@@ -59,7 +60,7 @@ export function filterPaths(config: oasConfig, oas: oas) {
 export function getConfig(): oasConfig {
     const config = getConfigRoot();
     try {
-        const endpointsPath = path.join(directusDir(), './extensions/endpoints');
+        const endpointsPath = path.join(directusDir(), extensionDir, '/endpoints');
         const files = fs.readdirSync(endpointsPath, { withFileTypes: true });
 
         for (const file of files) {
