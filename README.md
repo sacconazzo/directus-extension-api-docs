@@ -23,7 +23,7 @@ Ref: https://github.com/directus/directus
 
     npm install directus-extension-api-docs
 
--   Swagger interface: by default `http:localhost:8055/api-docs`
+-   Swagger interface: by default `http://localhost:8055/api-docs`
 -   Openapi documentation: by default `http://localhost:8055/api-docs/oas`
 
 ## Configuration (optional)
