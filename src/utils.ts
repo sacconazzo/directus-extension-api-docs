@@ -22,8 +22,16 @@ function getConfigRoot(): oasConfig {
         components: {},
     };
     try {
-        const configFile = path.join(directusDir(), extensionDir, '/endpoints/oasconfig.yaml');
-        const config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
+        let config;
+        try {
+            // packaged extensions
+            const configFile = path.join(directusDir(), extensionDir, '/oasconfig.yaml');
+            config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
+        } catch {
+            // legacy
+            const configFile = path.join(directusDir(), extensionDir, '/endpoints/oasconfig.yaml');
+            config = yaml.load(fs.readFileSync(configFile, { encoding: 'utf-8' }));
+        }
         config.docsPath = config.docsPath || defConfig.docsPath;
         config.info = config.info || defConfig.info;
         config.tags = config.tags || defConfig.tags;
@@ -60,18 +68,27 @@ export function filterPaths(config: oasConfig, oas: oas) {
 export function getConfig(): oasConfig {
     const config = getConfigRoot();
     try {
-        const endpointsPath = path.join(directusDir(), extensionDir, '/endpoints');
-        const files = fs.readdirSync(endpointsPath, { withFileTypes: true });
+        const mergeConfig = (oasPath: string) => {
+            const oas = yaml.load(fs.readFileSync(oasPath, { encoding: 'utf-8' }));
+            config.tags = [...config.tags, ...(oas.tags || [])];
+            config.paths = { ...config.paths, ...(oas.paths || {}) };
+            config.components = merge(config.components || {}, oas.components || {});
+        };
 
+        const extensionsPath = path.join(directusDir(), extensionDir);
+        const files = fs.readdirSync(extensionsPath, { withFileTypes: true });
         for (const file of files) {
-            const oasPath = `${endpointsPath}/${file.name}/oas.yaml`;
-            if (file.isDirectory() && fs.existsSync(oasPath)) {
-                const oas = yaml.load(fs.readFileSync(oasPath, { encoding: 'utf-8' }));
-                config.tags = [...config.tags, ...(oas.tags || [])];
-                config.paths = { ...config.paths, ...(oas.paths || {}) };
-                config.components = merge(config.components || {}, oas.components || {});
-            }
+            const oasPath = `${extensionsPath}/${file.name}/oas.yaml`;
+            if (file.isDirectory() && fs.existsSync(oasPath)) mergeConfig(oasPath);
         }
+
+        const legacyEndpointsPath = path.join(directusDir(), extensionDir, '/endpoints');
+        const legacyFiles = fs.readdirSync(legacyEndpointsPath, { withFileTypes: true });
+        for (const file of legacyFiles) {
+            const oasPath = `${legacyEndpointsPath}/${file.name}/oas.yaml`;
+            if (file.isDirectory() && fs.existsSync(oasPath)) mergeConfig(oasPath);
+        }
+
         return config;
     } catch (e) {
         return config;
