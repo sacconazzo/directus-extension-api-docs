@@ -9,8 +9,6 @@ Directus Extension to include:
     -- including custom endpoints definitions
 -   validation middleware on your custom endpoints (based on your openapi specifications). See below for details
 
-> Compatible with latest versions of Directus and packaged extensions.
-
 ![workspace](assets/swagger.png)
 
 ## Prerequisites
