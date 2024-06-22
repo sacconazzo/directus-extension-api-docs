@@ -7,7 +7,7 @@ Directus Extension to include
     -- custom endpoint definitions included
 -   validation middleware for your custom endpoints (based on your openapi)
 
-> Compatible with latest versions of Directus and monorepo installation with packaged extension.
+> Compatible with latest versions of Directus and packaged extensions.
 
 ![workspace](assets/swagger.png)
 
