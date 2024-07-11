@@ -1,6 +1,6 @@
 # directus-extension-api-docs
 
-> Compatible with latest versions of Directus and packaged extensions.
+> Compatible with latest Directus versions and packaged extensions.
 
 Directus Extension to include:
 
@@ -152,10 +152,8 @@ Example below:
 ```
 const { validate } = require('directus-extension-api-docs')
 
-const id = 'my-custom-path'
-
 export default {
-    id: 'info',
+    id: 'my-custom-path',
     handler: async (router, { services, getSchema }) => {
         const schema = await getSchema();
         await validate(router, services, schema); // Enable validator
