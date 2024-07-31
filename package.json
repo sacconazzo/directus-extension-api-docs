@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "2.0.6",
+    "version": "2.0.7",
     "description": "directus extension for swagger interface and openapi including custom endpoints definitions // custom endpoint validations middleware based on openapi",
     "licence": "MIT",
     "icon": "api",
