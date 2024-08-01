@@ -5,25 +5,20 @@ on:
     tags:
       - 'v[0-9]*'
 
+permissions:
+  contents: write
+
 jobs:
-  create-release:
-    name: Create Release
-    runs-on: ubuntu-latest
+  release:
+    name: Release pushed tag
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Get tag message
-        id: get_tag_message
-        run: |
-          TAG_NAME=${{ github.ref }}
-          TAG_MESSAGE=$(git tag -l --format='%(contents)' $TAG_NAME)
-          echo "::set-output name=tag_message::$TAG_MESSAGE"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.get_tag_message.outputs.tag_message}} 
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="$Release ${tag}" \
+              --generate-notes
