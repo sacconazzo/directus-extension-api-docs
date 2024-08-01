@@ -17,7 +17,7 @@ jobs:
         run: |
           TAG_NAME=${{ github.ref }}
           TAG_MESSAGE=$(git tag -l --format='%(contents)' $TAG_NAME)
-          echo "tag_message=$TAG_MESSAGE" >> $GITHUB_OUTPUT
+          echo "::set-output name=tag_message::$TAG_MESSAGE"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
