@@ -12,7 +12,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Create Release   
+      - name: Get tag message
+        id: get_tag_message
+        run: |
+          TAG_NAME=${{ github.ref }}
+          TAG_MESSAGE=$(git tag -l --format='%(contents)' $TAG_NAME)
+          echo "tag_message=$TAG_MESSAGE" >> $GITHUB_OUTPUT
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -20,3 +26,4 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          body: ${{ steps.get_tag_message.outputs.tag_message}} 
