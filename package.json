@@ -21,7 +21,9 @@
         "swagger",
         "custom endpoints",
         "openapi definition",
-        "openapi"
+        "openapi",
+        "validations",
+        "api-validator"
     ],
     "directus:extension": {
         "type": "endpoint",
