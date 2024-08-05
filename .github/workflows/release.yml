@@ -1,24 +1,25 @@
-name: New Release
+name: Check New Release
 
 on:
-  push:
-    tags:
-      - 'v[0-9]*'
+    push:
+        tags:
+            - 'v[0-9]*'
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  release:
-    name: Release from Tag
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create new release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-        run: |
-          gh release create "$tag" \
-              --repo="$GITHUB_REPOSITORY" \
-              --title="$Release ${tag}" \
-              --generate-notes
+    release:
+        name: Release pushed tag
+        runs-on: ubuntu-22.04
+        steps:
+            - name: Create release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  tag: ${{ github.ref_name }}
+              run: |
+                  gh release list --repo="$GITHUB_REPOSITORY" | grep -q "$tag" && echo "Release $tag already exists" ||\
+                  gh release create "$tag" \
+                      --repo="$GITHUB_REPOSITORY" \
+                      --title="$Release ${tag}" \
+                      --generate-notes
