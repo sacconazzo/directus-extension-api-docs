@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { SchemaOverview } from '@directus/shared/types';
+import { SchemaOverview } from '@directus/types';
 import { oas, oasConfig } from './types';
 
 const { findWorkspaceDir } = require('@pnpm/find-workspace-dir');
@@ -12,6 +12,14 @@ const extensionDir = process.env.EXTENSIONS_PATH || './extensions';
 
 let oasBuffer: string;
 
+/**
+ * Retrieves the configuration for OpenAPI specification (OAS) generation.
+ * The function attempts to load the configuration from a YAML file located in the specified extension directory.
+ * If the file is not found, it falls back to a legacy location.
+ * If the configuration file is not valid or cannot be read, it returns a default configuration.
+ *
+ * @returns {oasConfig} The OAS configuration.
+ */
 function getConfigRoot(): oasConfig {
     const defConfig: oasConfig = {
         docsPath: 'api-docs',
@@ -43,6 +51,13 @@ function getConfigRoot(): oasConfig {
     }
 }
 
+/**
+ * Filters the paths and tags in the OpenAPI specification (OAS) based on the published tags
+ * specified in the configuration. It removes any paths and tags that are not marked as published.
+ *
+ * @param config - The configuration object containing the published tags.
+ * @param oas - The OpenAPI specification object to be filtered.
+ */
 export function filterPaths(config: oasConfig, oas: oas) {
     for (const path in oas.paths) {
         for (const method in oas.paths[path]) {

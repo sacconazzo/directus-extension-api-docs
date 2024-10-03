@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineEndpoint } from '@directus/extensions-sdk';
-import { SchemaOverview } from '@directus/shared/types';
+// import { SchemaOverview } from '@directus/shared/types';
+import { SchemaOverview } from '@directus/types';
 import { Router, Request, Response, NextFunction } from 'express';
 import { getConfig, getOas, getPackage, merge, filterPaths } from './utils';
 
