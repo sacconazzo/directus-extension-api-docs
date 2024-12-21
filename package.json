@@ -63,7 +63,6 @@
         "pinia": "^2.3.0",
         "pino": "^9.5.0",
         "prettier": "^2.8.8",
-        "rollup": "2.79.2",
         "ts-jest": "^29.2.5",
         "ts-node": "^10.9.2",
         "typescript": "^4.9.5",
