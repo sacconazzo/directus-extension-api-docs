@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "2.1.9",
+    "version": "2.1.11",
     "description": "directus extension for swagger interface and openapi including custom endpoints definitions // custom endpoint validations middleware based on openapi",
     "licence": "MIT",
     "icon": "api",
@@ -45,7 +45,7 @@
         "swagger-ui-express": "^5.0.1"
     },
     "devDependencies": {
-        "@directus/extensions-sdk": "^12.1.4",
+        "@directus/extensions-sdk": "^13.0.4",
         "@directus/types": "^12.2.2",
         "@types/express": "^4.17.21",
         "@types/jest": "^29.5.14",
