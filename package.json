@@ -1,6 +1,6 @@
 {
     "name": "directus-extension-api-docs",
-    "version": "2.1.12",
+    "version": "2.1.13",
     "description": "directus extension for swagger interface and openapi including custom endpoints definitions // custom endpoint validations middleware based on openapi",
     "licence": "MIT",
     "icon": "api",
@@ -40,7 +40,7 @@
     },
     "dependencies": {
         "@pnpm/find-workspace-dir": "^7.0.3",
-        "express-openapi-validator": "^5.5.7",
+        "express-openapi-validator": "^5.5.8",
         "js-yaml": "^4.1.0",
         "swagger-ui-express": "^5.0.1"
     },
@@ -49,7 +49,7 @@
         "@directus/types": "^12.2.2",
         "@types/express": "^4.17.23",
         "@types/jest": "^29.5.14",
-        "@types/node": "^18.19.120",
+        "@types/node": "^18.19.123",
         "@typescript-eslint/eslint-plugin": "^5.62.0",
         "@typescript-eslint/parser": "^5.62.0",
         "eslint": "^8.57.1",
@@ -61,11 +61,11 @@
         "jest-extended": "^3.2.4",
         "openapi-schema-validator": "^12.1.3",
         "pinia": "^2.3.1",
-        "pino": "^9.7.0",
+        "pino": "^9.9.0",
         "prettier": "^2.8.8",
-        "ts-jest": "^29.4.0",
+        "ts-jest": "^29.4.1",
         "ts-node": "^10.9.2",
         "typescript": "^4.9.5",
-        "vue": "^3.5.17"
+        "vue": "^3.5.19"
     }
 }
