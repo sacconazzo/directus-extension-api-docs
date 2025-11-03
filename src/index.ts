@@ -62,6 +62,22 @@ export default {
             },
         };
 
+        // optional auth guard controlled by config.useAuthentication
+        if (config.useAuthentication) {
+            router.use(async (req: Request, res: Response, next: NextFunction) => {
+                try {
+                    const accountability = (req as any).accountability;
+                    if (!accountability?.user) {
+                        return res.status(401).json({ message: 'Unauthorized' });
+                    }
+                    return next();
+                } catch (error) {
+                    logger?.warn?.(error, 'Error while authorizing /api-docs');
+                    return res.status(403).json({ message: 'Forbidden' });
+                }
+            });
+        }
+
         router.use('/', swaggerUi.serve);
         router.get('/', swaggerUi.setup({}, options));
 

@@ -26,6 +26,7 @@ function getConfigRoot(): oasConfig {
         info: {},
         tags: [],
         publishedTags: [],
+        useAuthentication: false,
         paths: {},
         components: {},
     };
@@ -43,6 +44,8 @@ function getConfigRoot(): oasConfig {
         config.docsPath = config.docsPath || defConfig.docsPath;
         config.info = config.info || defConfig.info;
         config.tags = config.tags || defConfig.tags;
+        config.publishedTags = config.publishedTags || defConfig.publishedTags;
+        config.useAuthentication = typeof config.useAuthentication === 'boolean' ? config.useAuthentication : defConfig.useAuthentication;
         config.paths = config.paths || defConfig.paths;
         config.components = config.components || defConfig.components;
         return config;
