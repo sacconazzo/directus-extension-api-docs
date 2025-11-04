@@ -19,11 +19,11 @@ async function checkIfApiDocsPublic(req: Request, res: Response, next: NextFunct
             if (!accountability?.user) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
-            return next();
         } catch (error) {
             return res.status(403).json({ message: 'Forbidden' });
         }
     }
+    return next();
 }
 
 async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
