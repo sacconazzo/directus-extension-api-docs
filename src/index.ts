@@ -12,6 +12,20 @@ const config = getConfig();
 
 const id = config.docsPath;
 
+async function checkIfApiDocsPublic(req: Request, res: Response, next: NextFunction): Promise<void | Response> {
+    if (config.useAuthentication) {
+        try {
+            const accountability = (req as any).accountability;
+            if (!accountability?.user) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+            return next();
+        } catch (error) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+    }
+}
+
 async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
         const oas = await getOas(services, schema);
@@ -62,21 +76,7 @@ export default {
             },
         };
 
-        // optional auth guard controlled by config.useAuthentication
-        if (config.useAuthentication) {
-            router.use(async (req: Request, res: Response, next: NextFunction) => {
-                try {
-                    const accountability = (req as any).accountability;
-                    if (!accountability?.user) {
-                        return res.status(401).json({ message: 'Unauthorized' });
-                    }
-                    return next();
-                } catch (error) {
-                    logger?.warn?.(error, 'Error while authorizing /api-docs');
-                    return res.status(403).json({ message: 'Forbidden' });
-                }
-            });
-        }
+        router.use(checkIfApiDocsPublic);
 
         router.use('/', swaggerUi.serve);
         router.get('/', swaggerUi.setup({}, options));

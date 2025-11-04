@@ -3,7 +3,7 @@ export interface oasConfig {
     info: any;
     tags: Array<any>;
     publishedTags: Array<string>;
-    useAuthentication?: boolean;
+    useAuthentication: boolean;
     paths: {
         [key: string]: any;
     };

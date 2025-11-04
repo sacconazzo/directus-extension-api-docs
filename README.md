@@ -69,30 +69,6 @@ components:
 
 ```
 
-### Authentication
-
-By default, the API documentation endpoints are publicly accessible. To protect them with Directus authentication, set `useAuthentication: true` in your `oasconfig.yaml`.
-
-When authentication is enabled, the extension validates that incoming requests have a valid Directus user session. Authentication is verified through:
-
-- **Directus admin cookie** - Users logged into the Directus admin panel
-- **Bearer JWT token** - `Authorization: Bearer <token>` header
-- **Static token** - Directus static access tokens
-
-Unauthenticated requests receive a `401 Unauthorized` response. The extension uses Directus's built-in `accountability` system to verify user sessions, so no additional authentication setup is required beyond enabling the flag.
-
-**Example with authentication enabled:**
-```yaml
-useAuthentication: true
-docsPath: 'api-docs'
-```
-
-**Example with public access (default):**
-```yaml
-useAuthentication: false  # or omit this line
-docsPath: 'api-docs'
-```
-
 ## Definitions (optional)
 
 For each endpoint extension, you can define api's including a file `oas.yaml` in root path of your extension endpoint folder.
