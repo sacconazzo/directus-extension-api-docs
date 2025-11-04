@@ -3,7 +3,7 @@ import { defineEndpoint } from '@directus/extensions-sdk';
 // import { SchemaOverview } from '@directus/shared/types';
 import { SchemaOverview } from '@directus/types';
 import { Router, Request, Response, NextFunction } from 'express';
-import { getConfig, getOas, getPackage, merge, filterPaths } from './utils';
+import { getConfig, getOas, getOasAll, getPackage, merge, filterPaths } from './utils';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
@@ -12,23 +12,9 @@ const config = getConfig();
 
 const id = config.docsPath;
 
-async function checkIfApiDocsPublic(req: Request, res: Response, next: NextFunction): Promise<void | Response> {
-    if (config.useAuthentication) {
-        try {
-            const accountability = (req as any).accountability;
-            if (!accountability?.user) {
-                return res.status(401).json({ message: 'Unauthorized' });
-            }
-        } catch (error) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
-    }
-    return next();
-}
-
 async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
-        const oas = await getOas(services, schema);
+        const oas = await getOasAll(services, schema);
 
         // replace with custom endpoints
         if (paths) {
@@ -76,15 +62,16 @@ export default {
             },
         };
 
-        router.use(checkIfApiDocsPublic);
-
         router.use('/', swaggerUi.serve);
         router.get('/', swaggerUi.setup({}, options));
 
-        router.get('/oas', async (_req: Request, res: Response, next: NextFunction) => {
+        router.get('/oas', async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const schema = await getSchema();
-                const swagger = await getOas(services, schema);
+
+                const accountability = config.useAuthentication ? (req as any).accountability : { admin: true };
+
+                const swagger = await getOas(services, schema, accountability);
 
                 const pkg = await getPackage();
 

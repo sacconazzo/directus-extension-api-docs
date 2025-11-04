@@ -38,7 +38,7 @@ Options:
 -   `publishedTags` _optional_ if specified, will be published definitions only for specified tags
 -   `paths` _optional_ openapi custom paths (will be merged with all standard and all customs paths)
 -   `components` _optional_ openapi custom components (will be merged with all standard and all customs tags)
--   `useAuthentication` _optional_ require Directus authentication to access the docs interface (default false). When enabled, users must be authenticated via Directus admin cookie, static token, or Bearer JWT token to access `/api-docs` and `/api-docs/oas` endpoints
+-   `useAuthentication` _optional_ (default false). When enabled, access to `/api-docs` and `/api-docs/oas` requires a Directus admin cookie, static token, or Bearer JWT. Authorization is applied per endpoint based on Directus Access Policies, ensuring users only see endpoints they are allowed to access.
 
 Example below:
 
