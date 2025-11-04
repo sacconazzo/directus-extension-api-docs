@@ -38,11 +38,13 @@ Options:
 -   `publishedTags` _optional_ if specified, will be published definitions only for specified tags
 -   `paths` _optional_ openapi custom paths (will be merged with all standard and all customs paths)
 -   `components` _optional_ openapi custom components (will be merged with all standard and all customs tags)
+-   `useAuthentication` _optional_ require Directus authentication to access the docs interface (default false). When enabled, users must be authenticated via Directus admin cookie, static token, or Bearer JWT token to access `/api-docs` and `/api-docs/oas` endpoints
 
 Example below:
 
 ```
 docsPath: 'api-docs'
+useAuthentication: true
 info:
   title: my-directus-bo
   version: 1.5.0
@@ -65,6 +67,30 @@ components:
           example: 63716273-0f29-4648-8a2a-2af2948f6f78
           type: string
 
+```
+
+### Authentication
+
+By default, the API documentation endpoints are publicly accessible. To protect them with Directus authentication, set `useAuthentication: true` in your `oasconfig.yaml`.
+
+When authentication is enabled, the extension validates that incoming requests have a valid Directus user session. Authentication is verified through:
+
+- **Directus admin cookie** - Users logged into the Directus admin panel
+- **Bearer JWT token** - `Authorization: Bearer <token>` header
+- **Static token** - Directus static access tokens
+
+Unauthenticated requests receive a `401 Unauthorized` response. The extension uses Directus's built-in `accountability` system to verify user sessions, so no additional authentication setup is required beyond enabling the flag.
+
+**Example with authentication enabled:**
+```yaml
+useAuthentication: true
+docsPath: 'api-docs'
+```
+
+**Example with public access (default):**
+```yaml
+useAuthentication: false  # or omit this line
+docsPath: 'api-docs'
 ```
 
 ## Definitions (optional)
