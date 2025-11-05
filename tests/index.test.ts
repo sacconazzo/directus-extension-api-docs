@@ -78,6 +78,7 @@ describe('filterPaths', () => {
         const oasConfig: oasConfig = {
             docsPath: 'api-docs',
             info: {},
+            useAuthentication: true,
             tags: [],
             components: {},
             publishedTags: ['tag2'],
