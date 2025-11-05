@@ -80,21 +80,23 @@ export default {
                 swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
 
                 // inject custom-endpoints
-                try {
-                    for (const path in config.paths) {
-                        swagger.paths[path] = config.paths[path];
+                if (accountability.admin || accountability.user) {
+                    try {
+                        for (const path in config.paths) {
+                            swagger.paths[path] = config.paths[path];
+                        }
+
+                        for (const tag of config.tags) {
+                            swagger.tags.push(tag);
+                        }
+
+                        swagger.components = merge(config.components, swagger.components);
+                    } catch (e) {
+                        logger.info('No custom definitions');
                     }
 
-                    for (const tag of config.tags) {
-                        swagger.tags.push(tag);
-                    }
-
-                    swagger.components = merge(config.components, swagger.components);
-                } catch (e) {
-                    logger.info('No custom definitions');
+                    if (config.publishedTags?.length) filterPaths(config, swagger);
                 }
-
-                if (config.publishedTags?.length) filterPaths(config, swagger);
 
                 res.json(swagger);
             } catch (error: any) {
