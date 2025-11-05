@@ -3,7 +3,7 @@ import { defineEndpoint } from '@directus/extensions-sdk';
 // import { SchemaOverview } from '@directus/shared/types';
 import { SchemaOverview } from '@directus/types';
 import { Router, Request, Response, NextFunction } from 'express';
-import { getConfig, getOas, getPackage, merge, filterPaths } from './utils';
+import { getConfig, getOas, getOasAll, getPackage, merge, filterPaths } from './utils';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
@@ -14,7 +14,7 @@ const id = config.docsPath;
 
 async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
     if (config?.paths) {
-        const oas = await getOas(services, schema);
+        const oas = await getOasAll(services, schema);
 
         // replace with custom endpoints
         if (paths) {
@@ -65,10 +65,13 @@ export default {
         router.use('/', swaggerUi.serve);
         router.get('/', swaggerUi.setup({}, options));
 
-        router.get('/oas', async (_req: Request, res: Response, next: NextFunction) => {
+        router.get('/oas', async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const schema = await getSchema();
-                const swagger = await getOas(services, schema);
+
+                const accountability = config.useAuthentication ? (req as any).accountability : { admin: true };
+
+                const swagger = await getOas(services, schema, accountability);
 
                 const pkg = await getPackage();
 
@@ -77,21 +80,23 @@ export default {
                 swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
 
                 // inject custom-endpoints
-                try {
-                    for (const path in config.paths) {
-                        swagger.paths[path] = config.paths[path];
+                if (accountability.admin || accountability.user) {
+                    try {
+                        for (const path in config.paths) {
+                            swagger.paths[path] = config.paths[path];
+                        }
+
+                        for (const tag of config.tags) {
+                            swagger.tags.push(tag);
+                        }
+
+                        swagger.components = merge(config.components, swagger.components);
+                    } catch (e) {
+                        logger.info('No custom definitions');
                     }
 
-                    for (const tag of config.tags) {
-                        swagger.tags.push(tag);
-                    }
-
-                    swagger.components = merge(config.components, swagger.components);
-                } catch (e) {
-                    logger.info('No custom definitions');
+                    if (config.publishedTags?.length) filterPaths(config, swagger);
                 }
-
-                if (config.publishedTags?.length) filterPaths(config, swagger);
 
                 res.json(swagger);
             } catch (error: any) {

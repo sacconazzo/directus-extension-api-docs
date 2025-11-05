@@ -26,6 +26,7 @@ function getConfigRoot(): oasConfig {
         info: {},
         tags: [],
         publishedTags: [],
+        useAuthentication: false,
         paths: {},
         components: {},
     };
@@ -43,6 +44,8 @@ function getConfigRoot(): oasConfig {
         config.docsPath = config.docsPath || defConfig.docsPath;
         config.info = config.info || defConfig.info;
         config.tags = config.tags || defConfig.tags;
+        config.publishedTags = config.publishedTags || defConfig.publishedTags;
+        config.useAuthentication = typeof config.useAuthentication === 'boolean' ? config.useAuthentication : defConfig.useAuthentication;
         config.paths = config.paths || defConfig.paths;
         config.components = config.components || defConfig.components;
         return config;
@@ -110,18 +113,30 @@ export function getConfig(): oasConfig {
     }
 }
 
-export async function getOas(services: any, schema: SchemaOverview): Promise<oas> {
+export async function getOasAll(services: any, schema: SchemaOverview): Promise<oas> {
     if (oasBuffer) return JSON.parse(oasBuffer);
 
     const { SpecificationService } = services;
     const service = new SpecificationService({
-        accountability: { admin: true }, // null or accountability.admin = true needed
+        accountability: { admin: true },
         schema,
     });
 
     oasBuffer = JSON.stringify(await service.oas.generate());
 
     return JSON.parse(oasBuffer);
+}
+
+export async function getOas(services: any, schema: SchemaOverview, accountability: any): Promise<oas> {
+    const { SpecificationService } = services;
+    const service = new SpecificationService({
+        accountability,
+        schema,
+    });
+
+    const oas = JSON.stringify(await service.oas.generate());
+
+    return JSON.parse(oas);
 }
 
 export async function getPackage() {
