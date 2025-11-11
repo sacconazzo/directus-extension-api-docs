@@ -71,6 +71,38 @@ components:
 
 For each endpoint extension, you can define OpenAPI partials by adding an `oas.yaml` file in the root of that endpoint's folder.
 
+### Non-bundled extensions
+
+Place the `oas.yaml` file directly in the extension folder:
+
+```
+- ./extensions/
+  ─ oasconfig.yaml (optional)
+  - my-endpoint-extension/
+    - oas.yaml
+```
+
+### Bundled extensions
+
+For bundled extensions, place `oas.yaml` files in each sub-extension's folder under the `src` directory:
+
+```
+- ./extensions/
+  ─ oasconfig.yaml (optional)
+  - my-bundle-extension/
+    - src/
+      - routes-endpoint/
+        - oas.yaml
+      - admin-endpoint/
+        - oas.yaml
+```
+
+This structure follows Directus's standard bundle architecture where each sub-extension (routes, endpoints, hooks, etc.) has its own folder under `src/`. The extension will automatically discover and merge all `oas.yaml` files from these subdirectories.
+
+### Mixed environments
+
+Both bundled and non-bundled extensions can coexist in the same project. The extension will automatically detect and merge all `oas.yaml` files from both types.
+
 Properties:
 
 -   `tags` _optional_ openapi custom tags

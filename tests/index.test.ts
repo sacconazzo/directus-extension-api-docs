@@ -284,3 +284,41 @@ describe('getConfig edge cases', () => {
         expect(test.docsPath).toBeDefined();
     });
 });
+
+describe('bundled extension support', () => {
+    test('should merge oas.yaml from bundle extension src subdirectories', () => {
+        jest.spyOn(process, 'cwd').mockImplementation(() => {
+            return './tests/mocks/bundle';
+        });
+        const test = getConfig();
+        expect(test).toHaveProperty('docsPath');
+        expect(test).toHaveProperty('tags');
+        expect(test).toHaveProperty('paths');
+        expect(test).toHaveProperty('components');
+
+        // Check that routes from bundled sub-extensions are included
+        expect(test.paths).toHaveProperty('/bundle/items');
+        expect(test.paths).toHaveProperty('/bundle/users');
+
+        // Check that tags from bundled sub-extensions are included
+        expect(test.tags).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'bundle-routes' }), expect.objectContaining({ name: 'bundle-users' })]));
+
+        // Check that components from bundled sub-extensions are included
+        expect(test.components).toHaveProperty('schemas');
+        expect(test.components.schemas).toHaveProperty('BundleItem');
+    });
+
+    test('should merge both bundled and non-bundled extensions', () => {
+        jest.spyOn(process, 'cwd').mockImplementation(() => {
+            return './tests/mocks/mixed';
+        });
+        const test = getConfig();
+
+        // Check that routes from both types are included
+        expect(test.paths).toHaveProperty('/regular/endpoint');
+        expect(test.paths).toHaveProperty('/bundle/route-a');
+
+        // Check that tags from both types are included
+        expect(test.tags).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'regular' }), expect.objectContaining({ name: 'bundle-a' })]));
+    });
+});
