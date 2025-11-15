@@ -1,0 +1,16 @@
+openapi: 3.0.0
+info:
+  title: Regular Extension API
+  version: 1.0.0
+tags:
+  - name: regular
+    description: Regular non-bundled extension
+paths:
+  /regular/endpoint:
+    get:
+      tags:
+        - regular
+      summary: Regular extension endpoint
+      responses:
+        '200':
+          description: Success

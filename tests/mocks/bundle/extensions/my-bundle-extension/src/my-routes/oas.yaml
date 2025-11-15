@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: Bundle Extension API
+  version: 1.0.0
+  description: API from bundled extension
+tags:
+  - name: bundle-routes
+    description: Routes from bundle extension
+paths:
+  /bundle/items:
+    get:
+      tags:
+        - bundle-routes
+      summary: Get items from bundle
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+components:
+  schemas:
+    BundleItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string

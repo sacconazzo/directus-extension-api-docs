@@ -93,19 +93,43 @@ export function getConfig(): oasConfig {
             config.components = merge(config.components || {}, oas.components || {});
         };
 
-        const extensionsPath = path.join(directusDir(), extensionDir);
-        const files = fs.readdirSync(extensionsPath, { withFileTypes: true });
-        for (const file of files) {
-            const oasPath = `${extensionsPath}/${file.name}/oas.yaml`;
-            if (file.isDirectory() && fs.existsSync(oasPath)) mergeConfig(oasPath);
-        }
+        const scanDirectory = (dirPath: string) => {
+            if (!fs.existsSync(dirPath)) return;
 
+            const files = fs.readdirSync(dirPath, { withFileTypes: true });
+            for (const file of files) {
+                if (!file.isDirectory()) continue;
+
+                const extensionPath = path.join(dirPath, file.name);
+
+                // Check for oas.yaml at root level (non-bundle extensions)
+                const rootOasPath = path.join(extensionPath, 'oas.yaml');
+                if (fs.existsSync(rootOasPath)) {
+                    mergeConfig(rootOasPath);
+                }
+
+                // Check for oas.yaml in src subdirectories (bundled extensions - green option)
+                const srcPath = path.join(extensionPath, 'src');
+                if (fs.existsSync(srcPath)) {
+                    const srcFiles = fs.readdirSync(srcPath, { withFileTypes: true });
+                    for (const srcFile of srcFiles) {
+                        if (srcFile.isDirectory()) {
+                            const bundleOasPath = path.join(srcPath, srcFile.name, 'oas.yaml');
+                            if (fs.existsSync(bundleOasPath)) {
+                                mergeConfig(bundleOasPath);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const extensionsPath = path.join(directusDir(), extensionDir);
+        scanDirectory(extensionsPath);
+
+        // Legacy support for /endpoints subfolder
         const legacyEndpointsPath = path.join(directusDir(), extensionDir, '/endpoints');
-        const legacyFiles = fs.readdirSync(legacyEndpointsPath, { withFileTypes: true });
-        for (const file of legacyFiles) {
-            const oasPath = `${legacyEndpointsPath}/${file.name}/oas.yaml`;
-            if (file.isDirectory() && fs.existsSync(oasPath)) mergeConfig(oasPath);
-        }
+        scanDirectory(legacyEndpointsPath);
 
         return config;
     } catch (e) {

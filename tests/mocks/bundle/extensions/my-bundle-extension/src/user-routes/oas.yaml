@@ -1,0 +1,16 @@
+openapi: 3.0.0
+info:
+  title: Another Bundle Route
+  version: 1.0.0
+tags:
+  - name: bundle-users
+    description: User routes from bundle
+paths:
+  /bundle/users:
+    get:
+      tags:
+        - bundle-users
+      summary: Get users from bundle
+      responses:
+        '200':
+          description: Success
