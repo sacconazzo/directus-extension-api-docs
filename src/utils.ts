@@ -102,15 +102,20 @@ export function getConfig(): oasConfig {
 
                 const extensionPath = path.join(dirPath, file.name);
 
-                // Check for oas.yaml at root level (non-bundle extensions)
+                // Check for oas.yaml at root
                 const rootOasPath = path.join(extensionPath, 'oas.yaml');
                 if (fs.existsSync(rootOasPath)) {
                     mergeConfig(rootOasPath);
                 }
 
-                // Check for oas.yaml in src subdirectories (bundled extensions - green option)
+                // Check for oas.yaml in src subdirectories
                 const srcPath = path.join(extensionPath, 'src');
                 if (fs.existsSync(srcPath)) {
+                    const srcOasPath = path.join(srcPath, 'oas.yaml');
+                    if (fs.existsSync(srcOasPath)) {
+                        mergeConfig(srcOasPath);
+                    }
+
                     const srcFiles = fs.readdirSync(srcPath, { withFileTypes: true });
                     for (const srcFile of srcFiles) {
                         if (srcFile.isDirectory()) {
