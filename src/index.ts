@@ -4,6 +4,7 @@ import { defineEndpoint } from '@directus/extensions-sdk';
 import { SchemaOverview } from '@directus/types';
 import { Router, Request, Response, NextFunction } from 'express';
 import { getConfig, getOas, getOasAll, getPackage, merge, filterPaths } from './utils';
+import { buildZodOasFragment } from './zod/openapi';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
@@ -12,7 +13,7 @@ const config = getConfig();
 
 const id = config.docsPath;
 
-async function validate(router: Router, services: any, schema: SchemaOverview, paths: Array<string>): Promise<Router> {
+async function validate(router: Router, services: any, schema: SchemaOverview, paths?: Array<string>): Promise<Router> {
     if (config?.paths) {
         const oas = await getOasAll(services, schema);
 
@@ -91,6 +92,15 @@ export default {
                         }
 
                         swagger.components = merge(config.components, swagger.components);
+
+                        const zodFragment = buildZodOasFragment();
+                        for (const path in zodFragment.paths) {
+                            swagger.paths[path] = merge(swagger.paths[path] || {}, zodFragment.paths[path]);
+                        }
+                        swagger.components = merge(swagger.components, zodFragment.components);
+                        for (const tag of zodFragment.tags) {
+                            if (!swagger.tags.find((t: any) => t?.name === tag.name)) swagger.tags.push(tag);
+                        }
                     } catch (e) {
                         logger.info('No custom definitions');
                     }

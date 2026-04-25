@@ -1,0 +1,15 @@
+paths:
+  /yaml/items:
+    get:
+      tags: [yaml-tag]
+      summary: Get items declared in YAML
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    YamlItem:
+      type: object
+      properties:
+        id:
+          type: string
