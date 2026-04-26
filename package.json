@@ -7,16 +7,6 @@
     "author": "Giona Righini (sacconazzo)",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
-        },
-        "./zod": {
-            "types": "./dist/zod/index.d.ts",
-            "default": "./dist/zod/index.js"
-        }
-    },
     "files": [
         "dist",
         "!*.map",
@@ -48,7 +38,7 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint --ignore-path .gitignore --ext .ts tests/ src/",
         "lint:fix": "pnpm lint --fix",
-        "build": "directus-extension build && tsc -p tsconfig.lib.json",
+        "build": "directus-extension build",
         "dev": "directus-extension build -w --no-minify"
     },
     "dependencies": {

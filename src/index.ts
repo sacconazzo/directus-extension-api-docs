@@ -6,6 +6,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { getConfig, getOas, getOasAll, getPackage, merge, filterPaths } from './utils';
 import { buildZodOasFragment } from './zod/openapi';
 
+// Re-export Zod helpers as named exports of the main entry, alongside
+// `validate`. Consumers import them from the package root, e.g.:
+//   const { defineRoute, registerSchema, z } = require('directus-extension-api-docs');
+export { z, defineRoute, registerSchema, registry, zodValidator, buildZodOasFragment } from './zod';
+export type { RouteConfig, HttpMethod, ResponseDef, ZodValidatorTargets, ZodOasFragment } from './zod';
+
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
 
@@ -13,7 +19,7 @@ const config = getConfig();
 
 const id = config.docsPath;
 
-async function validate(router: Router, services: any, schema: SchemaOverview, paths?: Array<string>): Promise<Router> {
+export async function validate(router: Router, services: any, schema: SchemaOverview, paths?: Array<string>): Promise<Router> {
     if (config?.paths) {
         const oas = await getOasAll(services, schema);
 

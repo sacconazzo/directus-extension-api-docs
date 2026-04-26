@@ -7,7 +7,7 @@ Guida operativa per chi sviluppa su questo repository.
 Directus endpoint extension che espone Swagger UI (`/api-docs`) e OpenAPI (`/api-docs/oas`) mergiando lo spec core di Directus con le definizioni custom delle altre extension. Le definizioni custom possono essere dichiarate in due modi, supportati nello stesso progetto:
 
 1. **YAML** — `oasconfig.yaml` + `oas.yaml` per extension; validazione runtime opzionale tramite `validate(router, services, schema, paths?)` che monta `express-openapi-validator`.
-2. **Zod** (subpath `directus-extension-api-docs/zod`) — `defineRoute(router, {...})` registra rotta + schema; valida con un middleware proprio; contribuisce all'OpenAPI dello stesso `/oas`.
+2. **Zod** — `defineRoute(router, {...})` registra rotta + schema; valida con un middleware proprio; contribuisce all'OpenAPI dello stesso `/oas`. Esposto come named export del main, accanto a `validate`: `import { defineRoute, registerSchema, z } from 'directus-extension-api-docs'`.
 
 Le due strade si fondono in `src/index.ts`, route handler `GET /oas`: core spec → merge YAML (`config.paths/tags/components`) → merge `buildZodOasFragment()` → eventuale `filterPaths(publishedTags)`.
 
@@ -18,7 +18,7 @@ pnpm install
 pnpm test         # Jest
 pnpm typecheck    # tsc --noEmit (richiesto per i type-test in tests/zod/types.test-d.ts)
 pnpm lint         # eslint
-pnpm build        # directus-extension build (dist/index.js) + tsc -p tsconfig.lib.json (dist/zod/*)
+pnpm build        # directus-extension build → singolo dist/index.js
 pnpm dev          # build watch
 ```
 
@@ -32,7 +32,7 @@ src/
 │                   Handler /oas mergia core + YAML + fragment Zod in quest'ordine.
 ├── utils.ts        getConfig (scan YAML), getOas/getOasAll, merge(), filterPaths(), getPackage().
 ├── types.ts        Tipi YAML (oasConfig, oas).
-└── zod/            Sotto-modulo pubblicato come subpath ./zod
+└── zod/            Sotto-modulo: i suoi simboli sono ri-esportati come named exports da src/index.ts.
     ├── index.ts    Barrel: esegue extendZodWithOpenApi(z); export pubblico.
     ├── registry.ts Singleton OpenAPIRegistry; registerSchema; _resetRegistry (test only).
     ├── validate.ts zodValidator middleware: safeParse params→query→body, envelope errori 400.
@@ -44,7 +44,7 @@ Riusa `merge()` di `utils.ts` e `filterPaths()` di `utils.ts`. Non reinventare d
 
 ## Gotcha (cose non ovvie che bruciano tempo)
 
-- **Doppio target di build.** `directus-extension build` bundle solo `src/index.ts` → `dist/index.js`. Il sotto-modulo `src/zod/*` non viene bundlato dal SDK; lo compila `tsc -p tsconfig.lib.json` in `dist/zod/*.{js,d.ts}`. Subpath export configurato in `package.json#exports["./zod"]`.
+- **Build single-file.** `directus-extension build` (rollup del SDK) bundla `src/index.ts` con tutti gli import locali (incluso `src/zod/*`) in un unico `dist/index.js`. Le dipendenze npm (`zod`, `@asteasolutions/zod-to-openapi`, `swagger-ui-express`, ...) sono richieste a runtime. Non aggiungere step di build separati per emettere `dist/zod/*` — i simboli Zod sono esposti come named exports di `src/index.ts`.
 - **`@directus/extensions-sdk` è ESM.** Jest+ts-jest non lo carica in contesto CommonJS. I test che caricano `src/index.ts` devono mockarlo: `jest.mock('@directus/extensions-sdk', () => ({ defineEndpoint: (h: unknown) => h }))`.
 - **`getConfig()` legge da `process.cwd()` al module-load di `src/index.ts`.** Per testare diverse fixture YAML, montare `jest.spyOn(process, 'cwd')` **prima** del primo `require('../../src/index')`. ESM `import` viene hoistato e rompe l'ordine — usare `require()` esplicito al module level del test.
 - **Singleton `OpenAPIRegistry`.** `registry.definitions` è un **getter** che ritorna un nuovo array `[...parents, ..._definitions]`; mutarlo non resetta lo stato. `_resetRegistry()` muta `_definitions` (campo privato).

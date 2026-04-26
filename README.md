@@ -204,7 +204,7 @@ An alternative ergonomic API: declare the schema and the handler together. The O
 
 ```ts
 import { defineEndpoint } from '@directus/extensions-sdk';
-import { z, defineRoute, registerSchema } from 'directus-extension-api-docs/zod';
+import { z, defineRoute, registerSchema } from 'directus-extension-api-docs';
 
 const UserId = registerSchema(
     'UserId',
@@ -236,7 +236,7 @@ export default {
 };
 ```
 
-Public exports (from the `directus-extension-api-docs/zod` subpath):
+Public exports (named exports of the package main, alongside `validate`):
 
 | Export            | Purpose                                                                          |
 | ----------------- | -------------------------------------------------------------------------------- |
@@ -244,5 +244,7 @@ Public exports (from the `directus-extension-api-docs/zod` subpath):
 | `registerSchema`  | Register a reusable Zod schema as `components.schemas.<name>` (emits `$ref`).    |
 | `z`               | Re-exported `zod` already extended with `.openapi()` metadata.                   |
 | `zodValidator`    | The same per-slot validation middleware used by `defineRoute`, for advanced use. |
+
+CommonJS works too: `const { defineRoute, registerSchema, z } = require('directus-extension-api-docs')`.
 
 Validation errors are returned as HTTP `400` with the same `{ message, errors[] }` envelope used by `express-openapi-validator`, so existing API consumers don't need to change. Coexists with YAML definitions: pick whichever fits each endpoint.
