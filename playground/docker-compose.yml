@@ -19,10 +19,11 @@
 #   curl -X POST http://localhost:8055/zod-demo/hello \
 #        -H 'Content-Type: application/json' -d '{"name":"alice"}'
 #
-# This repo is read-only-mounted into the Directus container as a node_module
-# the demos resolve via `require('directus-extension-api-docs')`. Rebuild with
-# `pnpm build` to pick up code changes; EXTENSIONS_AUTO_RELOAD reloads them
-# without restarting the container.
+# This repo is read-only-mounted as a Directus extension, so Directus registers
+# /api-docs. NODE_PATH lets demo endpoints resolve
+# `require('directus-extension-api-docs')` to that same module instance.
+# Rebuild with `pnpm build` to pick up code changes; EXTENSIONS_AUTO_RELOAD
+# reloads them without restarting the container.
 
 name: api-docs-playground
 
@@ -47,6 +48,7 @@ services:
             # Required so the Marketplace tab lists this extension (which is
             # non-sandboxed because it mounts Express middleware directly).
             MARKETPLACE_TRUST: 'all'
+            NODE_PATH: '/directus/extensions'
             LOG_LEVEL: 'info'
             PUBLIC_URL: 'http://localhost:8055'
         volumes:
@@ -55,4 +57,4 @@ services:
             - ./extensions/yaml-demo:/directus/extensions/yaml-demo
             - ./extensions/zod-demo:/directus/extensions/zod-demo
             - ./extensions/directus-services-demo:/directus/extensions/directus-services-demo
-            - ..:/directus/extensions/node_modules/directus-extension-api-docs:ro
+            - ..:/directus/extensions/directus-extension-api-docs:ro

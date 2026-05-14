@@ -17,7 +17,7 @@ const OpenApiValidator = require('express-openapi-validator');
 
 const config = getConfig();
 
-const id = config.docsPath;
+export const id = config.docsPath;
 
 export async function validate(router: Router, services: any, schema: SchemaOverview, paths?: Array<string>): Promise<Router> {
     if (config?.paths) {
@@ -59,65 +59,67 @@ export async function validate(router: Router, services: any, schema: SchemaOver
     return router;
 }
 
+export const handler = defineEndpoint((router, { services, logger, getSchema }) => {
+    const options = {
+        swaggerOptions: {
+            url: `/${id}/oas`,
+        },
+    };
+
+    router.use('/', swaggerUi.serve);
+    router.get('/', swaggerUi.setup({}, options));
+
+    router.get('/oas', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const schema = await getSchema();
+
+            const accountability = config.useAuthentication ? (req as any).accountability : { admin: true };
+
+            const swagger = await getOas(services, schema, accountability);
+
+            const pkg = await getPackage();
+
+            swagger.info.title = config.info.title || pkg?.name || swagger.info.title;
+            swagger.info.version = config.info.version || pkg?.version || swagger.info.version;
+            swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
+
+            // inject custom-endpoints
+            if (accountability.admin || accountability.user) {
+                try {
+                    for (const path in config.paths) {
+                        swagger.paths[path] = config.paths[path];
+                    }
+
+                    for (const tag of config.tags) {
+                        swagger.tags.push(tag);
+                    }
+
+                    swagger.components = merge(config.components, swagger.components);
+
+                    const zodFragment = buildZodOasFragment();
+                    for (const path in zodFragment.paths) {
+                        swagger.paths[path] = merge(swagger.paths[path] || {}, zodFragment.paths[path]);
+                    }
+                    swagger.components = merge(swagger.components, zodFragment.components);
+                    for (const tag of zodFragment.tags) {
+                        if (!swagger.tags.find((t: any) => t?.name === tag.name)) swagger.tags.push(tag);
+                    }
+                } catch (e) {
+                    logger.info('No custom definitions');
+                }
+
+                if (config.publishedTags?.length) filterPaths(config, swagger);
+            }
+
+            res.json(swagger);
+        } catch (error: any) {
+            return next(new Error(error.message || error[0].message));
+        }
+    });
+});
+
 export default {
     id,
     validate,
-    handler: defineEndpoint((router, { services, logger, getSchema }) => {
-        const options = {
-            swaggerOptions: {
-                url: `/${id}/oas`,
-            },
-        };
-
-        router.use('/', swaggerUi.serve);
-        router.get('/', swaggerUi.setup({}, options));
-
-        router.get('/oas', async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const schema = await getSchema();
-
-                const accountability = config.useAuthentication ? (req as any).accountability : { admin: true };
-
-                const swagger = await getOas(services, schema, accountability);
-
-                const pkg = await getPackage();
-
-                swagger.info.title = config.info.title || pkg?.name || swagger.info.title;
-                swagger.info.version = config.info.version || pkg?.version || swagger.info.version;
-                swagger.info.description = config.info.description || pkg?.description || swagger.info.description;
-
-                // inject custom-endpoints
-                if (accountability.admin || accountability.user) {
-                    try {
-                        for (const path in config.paths) {
-                            swagger.paths[path] = config.paths[path];
-                        }
-
-                        for (const tag of config.tags) {
-                            swagger.tags.push(tag);
-                        }
-
-                        swagger.components = merge(config.components, swagger.components);
-
-                        const zodFragment = buildZodOasFragment();
-                        for (const path in zodFragment.paths) {
-                            swagger.paths[path] = merge(swagger.paths[path] || {}, zodFragment.paths[path]);
-                        }
-                        swagger.components = merge(swagger.components, zodFragment.components);
-                        for (const tag of zodFragment.tags) {
-                            if (!swagger.tags.find((t: any) => t?.name === tag.name)) swagger.tags.push(tag);
-                        }
-                    } catch (e) {
-                        logger.info('No custom definitions');
-                    }
-
-                    if (config.publishedTags?.length) filterPaths(config, swagger);
-                }
-
-                res.json(swagger);
-            } catch (error: any) {
-                return next(new Error(error.message || error[0].message));
-            }
-        });
-    }),
+    handler,
 };
