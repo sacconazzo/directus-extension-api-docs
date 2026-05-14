@@ -28,7 +28,12 @@ name: api-docs-playground
 
 services:
     directus:
-        image: directus/directus:11
+        # Pinned to the current Directus 11.x stable line (latest is 11.17.4
+        # as of this writing — bump as new patches land). Directus 12 has
+        # not been released yet; 11.x is the current major. The extension's
+        # `host` in package.json supports `^9 || ^10 || ^11` so it also
+        # works against the 10.x ESU line if you switch the image tag.
+        image: directus/directus:11.17.4
         ports:
             - '8055:8055'
         environment:
@@ -39,6 +44,9 @@ services:
             ADMIN_EMAIL: 'admin@example.com'
             ADMIN_PASSWORD: 'admin'
             EXTENSIONS_AUTO_RELOAD: 'true'
+            # Required so the Marketplace tab lists this extension (which is
+            # non-sandboxed because it mounts Express middleware directly).
+            MARKETPLACE_TRUST: 'all'
             LOG_LEVEL: 'info'
             PUBLIC_URL: 'http://localhost:8055'
         volumes:

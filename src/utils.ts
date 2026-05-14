@@ -137,7 +137,7 @@ export function getConfig(): oasConfig {
         scanDirectory(legacyEndpointsPath);
 
         return config;
-    } catch (e) {
+    } catch {
         return config;
     }
 }
@@ -172,7 +172,7 @@ export async function getPackage() {
     try {
         const workspaceDir = await findWorkspaceDir('.');
         return require(`${workspaceDir || directusDir()}/package.json`);
-    } catch (e) {
+    } catch {
         return {};
     }
 }
