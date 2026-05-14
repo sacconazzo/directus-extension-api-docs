@@ -2,6 +2,8 @@
 
 > Compatible with latest Directus versions and packaged extensions.
 
+Release notes: see [CHANGELOG.md](./CHANGELOG.md).
+
 Directus Extension providing:
 
 -   a Swagger UI interface (OpenAPI 3.x)
