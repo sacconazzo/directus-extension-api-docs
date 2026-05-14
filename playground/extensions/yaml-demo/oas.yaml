@@ -1,0 +1,31 @@
+tags:
+    - { name: YamlDemo }
+paths:
+    /yaml-demo/echo:
+        post:
+            summary: Echo a payload (validated by the YAML pipeline)
+            tags: [YamlDemo]
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required: [name]
+                            properties:
+                                name: { type: string, minLength: 1, example: 'alice' }
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    ok: { type: boolean }
+                                    payload:
+                                        type: object
+                                        properties:
+                                            name: { type: string }
+                '400':
+                    description: Validation failed

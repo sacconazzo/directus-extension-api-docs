@@ -77,6 +77,32 @@ tests/mocks/
 
 I test usano `supertest` + Express in-process; nessun boot di Directus.
 
+## Playground (test runtime in Directus reale)
+
+```
+playground/
+├── docker-compose.yml         Directus 11 + SQLite, bind-mount del dist/ del repo
+├── .gitignore
+└── extensions/                Mappato su /directus/extensions
+    ├── oasconfig.yaml         Config YAML root del playground
+    ├── yaml-demo/             Demo del percorso YAML + validate()
+    │   ├── package.json
+    │   ├── index.js
+    │   └── oas.yaml
+    └── zod-demo/              Demo di defineRoute con prefix + coercion
+        ├── package.json
+        └── index.js
+```
+
+Uso (dalla root del repo):
+```
+pnpm build                                              # produce dist/index.js
+docker compose -f playground/docker-compose.yml up      # boot Directus su :8055
+```
+Poi `http://localhost:8055/api-docs` (Swagger), `http://localhost:8055/api-docs/oas` (spec), `POST /yaml-demo/echo` e `POST /zod-demo/hello` per provare entrambe le pipeline. `EXTENSIONS_AUTO_RELOAD=true` rilegge dist senza restart del container — basta rifare `pnpm build`.
+
+I demo importano `directus-extension-api-docs` via il bind-mount di `package.json` + `dist/` su `extensions/node_modules/directus-extension-api-docs/` dentro il container; nessun `npm install` lato playground è necessario.
+
 ## Convenzioni
 
 - Niente nuovi file Markdown a meno che esplicitamente richiesto.

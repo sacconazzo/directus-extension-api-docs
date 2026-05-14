@@ -16,6 +16,14 @@ type InferOrAny<T> = T extends ZodTypeAny ? z.infer<T> : any;
 export type RouteConfig<P extends ZodTypeAny | undefined = undefined, Q extends ZodTypeAny | undefined = undefined, B extends ZodTypeAny | undefined = undefined> = {
     method: HttpMethod;
     path: string;
+    /**
+     * URL prefix prepended to `path` in the generated OpenAPI spec only.
+     * Directus mounts each endpoint extension under `/{extension-id}`, so
+     * the Express router doesn't see that segment — pass it here (e.g.
+     * `prefix: '/my-extension'`) and `/api-docs/oas` will show the full
+     * URL clients actually call. Defaults to '' (no prefix).
+     */
+    prefix?: string;
     summary?: string;
     description?: string;
     tags?: string[];
@@ -64,7 +72,7 @@ export function defineRoute<P extends ZodTypeAny | undefined = undefined, Q exte
 
     registry.registerPath({
         method: config.method,
-        path: expressToOpenApiPath(config.path),
+        path: (config.prefix ?? '') + expressToOpenApiPath(config.path),
         summary: config.summary,
         description: config.description,
         tags: config.tags,

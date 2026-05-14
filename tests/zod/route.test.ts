@@ -57,6 +57,34 @@ describe('defineRoute — registry side-effects', () => {
         expect(route?.route.security).toEqual([{ Auth: [] }]);
     });
 
+    test('prepends `prefix` to the OpenAPI path while leaving the router path untouched', () => {
+        const router = express.Router();
+        const postSpy = jest.spyOn(router, 'post');
+        defineRoute(router, {
+            method: 'post',
+            path: '/echo',
+            prefix: '/my-extension',
+            request: { body: z.object({ x: z.string() }) },
+            responses: { 200: { description: 'OK' } },
+            handler: noopHandler,
+        });
+        // OAS sees the absolute path that clients actually call:
+        expect(findRoute('post', '/my-extension/echo')).toBeDefined();
+        // Express router is still mounted at the relative path:
+        expect(postSpy).toHaveBeenCalledWith('/echo', expect.any(Function), expect.any(Function));
+    });
+
+    test('omits the prefix when it is not supplied (back-compat default)', () => {
+        const router = express.Router();
+        defineRoute(router, {
+            method: 'get',
+            path: '/no-prefix',
+            responses: { 200: { description: 'OK' } },
+            handler: noopHandler,
+        });
+        expect(findRoute('get', '/no-prefix')).toBeDefined();
+    });
+
     test('translates optional and multiple Express params to OpenAPI braces', () => {
         const router = express.Router();
         defineRoute(router, {

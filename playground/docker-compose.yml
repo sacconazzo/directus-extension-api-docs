@@ -1,0 +1,48 @@
+# Self-contained Directus playground for runtime-testing this extension.
+#
+# Usage from the repo root:
+#   pnpm build
+#   docker compose -f playground/docker-compose.yml up
+#
+# Then open:
+#   http://localhost:8055/admin          (login admin@example.com / admin)
+#   http://localhost:8055/api-docs       (Swagger UI, no auth required here)
+#   http://localhost:8055/api-docs/oas   (raw OpenAPI JSON)
+#
+# Two demo extensions are pre-mounted under `extensions/`:
+#   - yaml-demo   exercises the legacy YAML pipeline + validate()
+#   - zod-demo    exercises the Zod pipeline + defineRoute()
+#
+# Try them with curl:
+#   curl -X POST http://localhost:8055/yaml-demo/echo \
+#        -H 'Content-Type: application/json' -d '{"name":"alice"}'
+#   curl -X POST http://localhost:8055/zod-demo/hello \
+#        -H 'Content-Type: application/json' -d '{"name":"alice"}'
+#
+# The built dist/ of this repo is read-only-mounted into the Directus
+# container as a node_module the demos resolve via `require('directus-
+# extension-api-docs')`. Rebuild with `pnpm build` to pick up code changes;
+# EXTENSIONS_AUTO_RELOAD reloads them without restarting the container.
+
+name: api-docs-playground
+
+services:
+    directus:
+        image: directus/directus:11
+        ports:
+            - '8055:8055'
+        environment:
+            KEY: 'playground-key-change-me'
+            SECRET: 'playground-secret-change-me'
+            DB_CLIENT: 'sqlite3'
+            DB_FILENAME: '/directus/database/data.db'
+            ADMIN_EMAIL: 'admin@example.com'
+            ADMIN_PASSWORD: 'admin'
+            EXTENSIONS_AUTO_RELOAD: 'true'
+            LOG_LEVEL: 'info'
+            PUBLIC_URL: 'http://localhost:8055'
+        volumes:
+            - ./data/database:/directus/database
+            - ./extensions:/directus/extensions
+            - ../package.json:/directus/extensions/node_modules/directus-extension-api-docs/package.json:ro
+            - ../dist:/directus/extensions/node_modules/directus-extension-api-docs/dist:ro

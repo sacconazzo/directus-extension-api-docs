@@ -1,0 +1,9 @@
+docsPath: 'api-docs'
+useAuthentication: false
+info:
+    title: API Docs Playground
+    version: '0.1.0'
+    description: Runtime playground that exercises both the YAML and Zod pipelines.
+tags:
+    - { name: YamlDemo, description: 'Endpoints declared through the legacy oas.yaml pipeline.' }
+    - { name: ZodDemo, description: 'Endpoints declared through defineRoute (Zod).' }
