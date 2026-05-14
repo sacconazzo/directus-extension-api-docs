@@ -19,10 +19,10 @@
 #   curl -X POST http://localhost:8055/zod-demo/hello \
 #        -H 'Content-Type: application/json' -d '{"name":"alice"}'
 #
-# The built dist/ of this repo is read-only-mounted into the Directus
-# container as a node_module the demos resolve via `require('directus-
-# extension-api-docs')`. Rebuild with `pnpm build` to pick up code changes;
-# EXTENSIONS_AUTO_RELOAD reloads them without restarting the container.
+# This repo is read-only-mounted into the Directus container as a node_module
+# the demos resolve via `require('directus-extension-api-docs')`. Rebuild with
+# `pnpm build` to pick up code changes; EXTENSIONS_AUTO_RELOAD reloads them
+# without restarting the container.
 
 name: api-docs-playground
 
@@ -51,6 +51,8 @@ services:
             PUBLIC_URL: 'http://localhost:8055'
         volumes:
             - ./data/database:/directus/database
-            - ./extensions:/directus/extensions
-            - ../package.json:/directus/extensions/node_modules/directus-extension-api-docs/package.json:ro
-            - ../dist:/directus/extensions/node_modules/directus-extension-api-docs/dist:ro
+            - ./extensions/oasconfig.yaml:/directus/extensions/oasconfig.yaml:ro
+            - ./extensions/yaml-demo:/directus/extensions/yaml-demo
+            - ./extensions/zod-demo:/directus/extensions/zod-demo
+            - ./extensions/directus-services-demo:/directus/extensions/directus-services-demo
+            - ..:/directus/extensions/node_modules/directus-extension-api-docs:ro
