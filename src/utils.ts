@@ -170,7 +170,7 @@ export async function getOas(services: any, schema: SchemaOverview, accountabili
 
 export async function getPackage() {
     try {
-        const workspaceDir = await findWorkspaceDir('.');
+        const workspaceDir = await findWorkspaceDir(process.cwd());
         return require(`${workspaceDir || directusDir()}/package.json`);
     } catch {
         return {};
