@@ -84,12 +84,15 @@ playground/
 ├── docker-compose.yml         Directus 11 + SQLite, bind-mount del dist/ del repo
 ├── .gitignore
 └── extensions/                Mappato su /directus/extensions
-    ├── oasconfig.yaml         Config YAML root del playground
-    ├── yaml-demo/             Demo del percorso YAML + validate()
+    ├── oasconfig.yaml         Config YAML root + securitySchemes per il lock in Swagger
+    ├── yaml-demo/             POST /echo, GET /users/:id (path param + 200/404), DELETE /items/:id
     │   ├── package.json
     │   ├── index.js
     │   └── oas.yaml
-    └── zod-demo/              Demo di defineRoute con prefix + coercion
+    ├── zod-demo/              8 rotte: GET/POST/PUT/DELETE, discriminatedUnion, security, deprecated, throw
+    │   ├── package.json
+    │   └── index.js
+    └── directus-services-demo/  Rotte Zod che chiamano UsersService (DB SQLite reale)
         ├── package.json
         └── index.js
 ```
@@ -99,7 +102,7 @@ Uso (dalla root del repo):
 pnpm build                                              # produce dist/index.js
 docker compose -f playground/docker-compose.yml up      # boot Directus su :8055
 ```
-Poi `http://localhost:8055/api-docs` (Swagger), `http://localhost:8055/api-docs/oas` (spec), `POST /yaml-demo/echo` e `POST /zod-demo/hello` per provare entrambe le pipeline. `EXTENSIONS_AUTO_RELOAD=true` rilegge dist senza restart del container — basta rifare `pnpm build`.
+Poi `http://localhost:8055/api-docs` (Swagger), `http://localhost:8055/api-docs/oas` (spec), e prova le rotte demo. `EXTENSIONS_AUTO_RELOAD=true` rilegge dist senza restart del container — basta rifare `pnpm build`. Modifiche a `playground/extensions/*/index.js` o `oas.yaml` non richiedono build, vengono prese al volo.
 
 I demo importano `directus-extension-api-docs` via il bind-mount di `package.json` + `dist/` su `extensions/node_modules/directus-extension-api-docs/` dentro il container; nessun `npm install` lato playground è necessario.
 

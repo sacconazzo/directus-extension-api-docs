@@ -7,3 +7,10 @@ info:
 tags:
     - { name: YamlDemo, description: 'Endpoints declared through the legacy oas.yaml pipeline.' }
     - { name: ZodDemo, description: 'Endpoints declared through defineRoute (Zod).' }
+    - { name: DirectusServices, description: 'Zod routes that call Directus services (real DB).' }
+components:
+    securitySchemes:
+        Auth:
+            type: http
+            scheme: bearer
+            description: Directus bearer token. Login via /auth/login to obtain one.
