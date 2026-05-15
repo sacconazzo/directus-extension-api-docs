@@ -1,0 +1,12 @@
+docsPath: 'api-docs'
+useAuthentication: false
+info:
+  title: Mixed YAML + Zod
+  version: 0.0.1
+  description: Fixture for the integration test
+tags:
+  - name: yaml-tag
+    description: tag declared via YAML
+publishedTags: []
+paths: {}
+components: {}

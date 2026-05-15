@@ -1,0 +1,22 @@
+docsPath: 'api-docs'
+useAuthentication: true
+info:
+  title: legacy-oas-fixture
+  version: '1.2.3'
+  description: regression fixture for the /oas handler
+tags:
+  - { name: Custom, description: A custom tag }
+publishedTags: []
+paths:
+  /custom/things:
+    get:
+      tags: [Custom]
+      summary: List things
+      responses:
+        '200': { description: OK }
+components:
+  schemas:
+    Thing:
+      type: object
+      properties:
+        id: { type: string }

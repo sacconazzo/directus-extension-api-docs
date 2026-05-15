@@ -1,0 +1,89 @@
+tags:
+    - { name: YamlDemo }
+paths:
+    /yaml-demo/echo:
+        post:
+            summary: Echo a payload (validated by the YAML pipeline)
+            tags: [YamlDemo]
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required: [name]
+                            properties:
+                                name: { type: string, minLength: 1, example: 'alice' }
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    ok: { type: boolean }
+                                    payload:
+                                        type: object
+                                        properties:
+                                            name: { type: string }
+                '400':
+                    description: Validation failed
+
+    /yaml-demo/users/{id}:
+        get:
+            summary: Read a user by id (path param + multi-status)
+            tags: [YamlDemo]
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                      example: '00000000-0000-4000-8000-000000000001'
+            responses:
+                '200':
+                    description: Found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserSummary'
+                '404':
+                    description: Not found
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ApiError'
+
+    /yaml-demo/items/{id}:
+        delete:
+            summary: Delete an item by id (DELETE verb, 204 on success)
+            tags: [YamlDemo]
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema: { type: string, format: uuid }
+            responses:
+                '204': { description: Gone }
+                '404':
+                    description: Not found
+                    content:
+                        application/json:
+                            schema: { $ref: '#/components/schemas/ApiError' }
+
+components:
+    schemas:
+        UserSummary:
+            type: object
+            required: [id, email]
+            properties:
+                id: { type: string, format: uuid }
+                email: { type: string, format: email, example: 'alice@example.com' }
+        ApiError:
+            type: object
+            required: [message]
+            properties:
+                message: { type: string }
+                code: { type: string, nullable: true }
