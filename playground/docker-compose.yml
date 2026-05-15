@@ -45,9 +45,6 @@ services:
             ADMIN_EMAIL: 'admin@example.com'
             ADMIN_PASSWORD: 'admin'
             EXTENSIONS_AUTO_RELOAD: 'true'
-            # Required so the Marketplace tab lists this extension (which is
-            # non-sandboxed because it mounts Express middleware directly).
-            MARKETPLACE_TRUST: 'all'
             NODE_PATH: '/directus/extensions'
             LOG_LEVEL: 'info'
             PUBLIC_URL: 'http://localhost:8055'

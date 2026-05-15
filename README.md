@@ -29,10 +29,6 @@ npm install directus-extension-api-docs
 -   Swagger interface: by default `http://localhost:8055/api-docs`
 -   Openapi documentation: by default `http://localhost:8055/api-docs/oas`
 
-### Marketplace note (Directus ≥ 10.10)
-
-This extension mounts Express-level middleware (Swagger UI, validators) and is therefore **not compatible with the Marketplace sandbox**. To install it from the in-app Marketplace your Directus instance must be started with `MARKETPLACE_TRUST=all`. Otherwise install it via `npm install` as shown above.
-
 ## Configuration (optional)
 
 To include your custom endpoints in the documentation, create an `oasconfig.yaml` file directly under the `/extensions` folder (recommended structure). Avoid placing it under `/extensions/endpoints` unless using Legacy mode.
