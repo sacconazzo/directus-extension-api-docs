@@ -57,7 +57,8 @@ export type EndpointSetup = (route: RouteHelper, ctx: EndpointContext) => void;
  *   `req.params/query/body` continue to work exactly as in `defineRoute`.
  */
 export function defineEndpoint(id: string, setup: EndpointSetup): { id: string; handler: (router: Router, ctx: EndpointContext) => void } {
-    const prefix = `/${id}`;
+    // Normalise so '/foo' and 'foo' both yield prefix '/foo' (avoid '//foo').
+    const prefix = '/' + id.replace(/^\/+|\/+$/g, '');
     return {
         id,
         handler: (router: Router, ctx: EndpointContext) => {

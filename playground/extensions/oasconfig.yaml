@@ -6,7 +6,7 @@ info:
     description: Runtime playground that exercises both the YAML and Zod pipelines.
 tags:
     - { name: YamlDemo, description: 'Endpoints declared through the legacy oas.yaml pipeline.' }
-    - { name: ZodDemo, description: 'Endpoints declared through defineRoute (Zod).' }
+    - { name: ZodDemo, description: 'Endpoints declared through defineEndpoint (Zod).' }
     - { name: DirectusServices, description: 'Zod routes that call Directus services (real DB).' }
 components:
     securitySchemes:

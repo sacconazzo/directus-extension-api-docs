@@ -87,6 +87,20 @@ describe('defineEndpoint — registry side-effects', () => {
         ep.handler(express.Router(), { services: {}, getSchema: async () => ({}) });
         expect(findRoute('get', '/users/by-id/{id}')).toBeDefined();
     });
+
+    test('normalises an id with leading or trailing slashes (no double-slash in OAS path)', () => {
+        const ep = defineEndpoint('/leading/', route => {
+            route({
+                method: 'get',
+                path: '/x',
+                responses: { 200: { description: 'OK' } },
+                handler: (_req, res) => res.end(),
+            });
+        });
+        ep.handler(express.Router(), { services: {}, getSchema: async () => ({}) });
+        expect(findRoute('get', '/leading/x')).toBeDefined();
+        expect(findRoute('get', '//leading//x')).toBeUndefined();
+    });
 });
 
 describe('defineEndpoint — runtime behaviour', () => {
