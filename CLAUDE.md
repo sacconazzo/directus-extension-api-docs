@@ -105,7 +105,7 @@ pnpm build                                              # produce dist/index.js
 docker compose -f playground/docker-compose.yml up      # boot Directus su :8055
 ```
 
-L'image è pinnata a `directus/directus:11.17.4` (current stable 11.x — Directus 12 non è ancora rilasciato; 10.x è in ESU). `MARKETPLACE_TRUST=all` è già passato nel compose perché l'estensione è non-sandboxata (monta middleware Express).
+L'image è pinnata a `directus/directus:11.17.4` (current stable 11.x — Directus 12 non è ancora rilasciato; 10.x è in ESU).
 Poi `http://localhost:8055/api-docs` (Swagger), `http://localhost:8055/api-docs/oas` (spec), e prova le rotte demo. `EXTENSIONS_AUTO_RELOAD=true` rilegge dist senza restart del container — basta rifare `pnpm build`. Modifiche a `playground/extensions/*/index.js` o `oas.yaml` non richiedono build, vengono prese al volo.
 
 I demo importano `directus-extension-api-docs` via il bind-mount di `package.json` + `dist/` su `extensions/node_modules/directus-extension-api-docs/` dentro il container; nessun `npm install` lato playground è necessario.

@@ -64,16 +64,13 @@ bundled runtime dependencies, and a small CJS-interop shape change (see
     - `directus:extension.host` expanded from `^9.19.2` to
       `^9.0.0 || ^10.0.0 || ^11.0.0` (current major plus the 10.x ESU line).
 - Docker-based runtime playground under `playground/` (Directus `11.17.4` +
-  SQLite + `MARKETPLACE_TRUST=all`) with three demo extensions:
+  SQLite) with three demo extensions:
     - `yaml-demo` — legacy YAML + `validate()` (POST, GET-with-param, DELETE);
     - `zod-demo` — `defineRoute` with prefix, security, deprecated,
       `discriminatedUnion`, error forwarding;
     - `directus-services-demo` — Zod routes calling `UsersService` against the
       real DB.
-- New README section "Zod-first routes (optional)" plus a "Marketplace note"
-  in the Installation section explaining that the extension requires
-  `MARKETPLACE_TRUST=all` on Directus ≥ 10.10 (non-sandboxable because it
-  mounts Express middleware).
+- New README section "Zod-first routes (optional)".
 - Comprehensive test coverage: 112 unit and integration tests (was ~25), with
   dedicated regression suites for the legacy `validate()` function and the
   `/oas` handler.
@@ -105,14 +102,6 @@ bundled runtime dependencies, and a small CJS-interop shape change (see
   exactly as before.
 - Directus loads the extension via `require(...).default || require(...)` —
   unchanged.
-
-### Marketplace
-
-This extension mounts Express middleware (Swagger UI, `express-openapi-validator`,
-the Zod validator) and therefore **cannot run in the Directus Marketplace
-sandbox**. To install it via the in-app Marketplace on Directus ≥ 10.10 your
-instance must be started with `MARKETPLACE_TRUST=all`. Standard
-`npm install directus-extension-api-docs` continues to work everywhere.
 
 ## [2.3.4] - 2026-04-24
 
