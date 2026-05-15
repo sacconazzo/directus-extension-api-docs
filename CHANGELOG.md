@@ -84,12 +84,6 @@ bundled runtime dependencies, and a small CJS-interop shape change (see
   exactly as before.
 - Directus loads the extension via `require(...).default || require(...)` —
   unchanged.
-- **CJS interop shape change** (affects undocumented patterns only): the
-  package now publishes named exports alongside the default, so
-  `require('directus-extension-api-docs').id` and `.handler` are reachable
-  only via `.default.id` / `.default.handler`. If you were relying on the
-  hoisted-default shape, switch to `.default.<name>` or to a destructured
-  import. No README example used this pattern.
 
 ### Marketplace
 
