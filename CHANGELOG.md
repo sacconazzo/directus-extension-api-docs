@@ -28,15 +28,36 @@ bundled runtime dependencies, and a small CJS-interop shape change (see
 
     | Export                 | Purpose                                                              |
     |------------------------|----------------------------------------------------------------------|
-    | `defineRoute`          | Register a route: schemas → registry, validator middleware, handler |
+    | `defineEndpoint`       | Declarative wrapper for a Directus endpoint extension (recommended)  |
+    | `defineRoute`          | Lower-level route registration when you already have your own router |
     | `registerSchema`       | Declare a reusable schema as `components.schemas.<name>` (emits `$ref`) |
     | `z`                    | Re-exported zod extended with `.openapi()` metadata                  |
     | `zodValidator`         | Per-slot validation middleware (for advanced use)                    |
     | `registry`             | Singleton `OpenAPIRegistry` from `@asteasolutions/zod-to-openapi`    |
     | `buildZodOasFragment`  | Materialise the registry into `{paths, components, tags}`           |
 
+    The recommended shape:
+
+    ```js
+    const { defineEndpoint, z, registerSchema } = require('directus-extension-api-docs');
+
+    module.exports = defineEndpoint('my-id', (route, { services, getSchema }) => {
+        route({
+            method: 'post',
+            path: '/hello',
+            request: { body: z.object({ name: z.string().min(1) }) },
+            responses: { 200: { description: 'OK' } },
+            handler: (req, res) => res.json({ message: `hi ${req.body.name}` }),
+        });
+    });
+    ```
+
+    `defineEndpoint` derives the OpenAPI prefix from `id` and replaces the
+    boilerplate of importing `defineEndpoint` from `@directus/extensions-sdk`
+    plus wrapping `defineRoute(router, ...)` calls inside it.
+
 - `prefix` option on `defineRoute` to align the OpenAPI path with Directus's
-  `/{extension-id}` mount (router path stays relative).
+  `/{extension-id}` mount when using the lower-level helper.
 - Marketplace metadata:
     - new `directus-extension-endpoint` keyword;
     - `bugs.url`, `engines.node ">=18"`;

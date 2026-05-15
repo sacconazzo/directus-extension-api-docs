@@ -9,6 +9,8 @@ export { z };
 export { registry, registerSchema, _resetRegistry } from './registry';
 export { defineRoute } from './route';
 export type { RouteConfig, HttpMethod, ResponseDef } from './route';
+export { defineEndpoint } from './endpoint';
+export type { EndpointSetup, EndpointContext, RouteHelper } from './endpoint';
 export { zodValidator } from './validate';
 export type { ZodValidatorTargets } from './validate';
 export { buildZodOasFragment } from './openapi';

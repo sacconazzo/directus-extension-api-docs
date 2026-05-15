@@ -7,7 +7,7 @@ Guida operativa per chi sviluppa su questo repository.
 Directus endpoint extension che espone Swagger UI (`/api-docs`) e OpenAPI (`/api-docs/oas`) mergiando lo spec core di Directus con le definizioni custom delle altre extension. Le definizioni custom possono essere dichiarate in due modi, supportati nello stesso progetto:
 
 1. **YAML** — `oasconfig.yaml` + `oas.yaml` per extension; validazione runtime opzionale tramite `validate(router, services, schema, paths?)` che monta `express-openapi-validator`.
-2. **Zod** — `defineRoute(router, {...})` registra rotta + schema; valida con un middleware proprio; contribuisce all'OpenAPI dello stesso `/oas`. Esposto come named export del main, accanto a `validate`: `import { defineRoute, registerSchema, z } from 'directus-extension-api-docs'`.
+2. **Zod** — `defineEndpoint(id, (route, ctx) => { route({...}) })` è l'API ergonomica: deriva il prefix OpenAPI da `id`, espone `services`/`getSchema` nello scope e wrappa internamente il `defineEndpoint` del SDK. `defineRoute(router, {...})` resta come API low-level per casi misti Zod+Express raw. Tutto esposto come named export del main, accanto a `validate`: `import { defineEndpoint, defineRoute, registerSchema, z } from 'directus-extension-api-docs'`.
 
 Le due strade si fondono in `src/index.ts`, route handler `GET /oas`: core spec → merge YAML (`config.paths/tags/components`) → merge `buildZodOasFragment()` → eventuale `filterPaths(publishedTags)`.
 
@@ -37,7 +37,9 @@ src/
     ├── registry.ts Singleton OpenAPIRegistry; registerSchema; _resetRegistry (test only).
     ├── validate.ts zodValidator middleware: safeParse params→query→body, envelope errori 400.
     ├── openapi.ts  buildZodOasFragment(): registry → {paths, components, tags}.
-    └── route.ts    defineRoute(): registry.registerPath + montaggio middleware su router Express.
+    ├── route.ts    defineRoute(): registry.registerPath + montaggio middleware su router Express.
+    └── endpoint.ts defineEndpoint(id, setup): wrapper che ritorna {id, handler}, cura prefix `/<id>`,
+                    ed espone `route()` curried su router+prefix dentro lo setup callback.
 ```
 
 Riusa `merge()` di `utils.ts` e `filterPaths()` di `utils.ts`. Non reinventare deep-merge o filtro tag.

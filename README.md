@@ -208,11 +208,10 @@ export default {
 
 ## Zod-first routes (optional)
 
-An alternative ergonomic API: declare the schema and the handler together. The OpenAPI fragment is generated and merged into the same spec served at `/api-docs/oas`, and request validation runs automatically before the handler.
+An alternative ergonomic API: declare schemas and handlers together. The OpenAPI fragment is generated and merged into the same spec served at `/api-docs/oas`, and request validation runs automatically before each handler. Everything you need ships from this package — no need to import `defineEndpoint` from the Directus SDK.
 
 ```ts
-import { defineEndpoint } from '@directus/extensions-sdk';
-import { z, defineRoute, registerSchema } from 'directus-extension-api-docs';
+const { defineEndpoint, z, registerSchema } = require('directus-extension-api-docs');
 
 const UserId = registerSchema(
     'UserId',
@@ -221,38 +220,39 @@ const UserId = registerSchema(
     }),
 );
 
-export default {
-    id: 'my-custom-path',
-    handler: defineEndpoint((router) => {
-        defineRoute(router, {
-            method: 'post',
-            path: '/my-endpoint',
-            tags: ['MyCustomTag'],
-            summary: 'Validate user id',
-            security: [{ Auth: [] }],
-            request: { body: UserId },
-            responses: {
-                200: { description: 'OK', schema: UserId },
-                401: { description: 'Unauthorized' },
-            },
-            handler: async (req, res) => {
-                // req.body is typed: { user_id: string }
-                res.json({ user_id: req.body.user_id });
-            },
-        });
-    }),
-};
+module.exports = defineEndpoint('my-custom-path', (route, { services, getSchema }) => {
+    route({
+        method: 'post',
+        path: '/my-endpoint',
+        tags: ['MyCustomTag'],
+        summary: 'Validate user id',
+        security: [{ Auth: [] }],
+        request: { body: UserId },
+        responses: {
+            200: { description: 'OK', schema: UserId },
+            401: { description: 'Unauthorized' },
+        },
+        handler: async (req, res) => {
+            // req.body is typed: { user_id: string }
+            res.json({ user_id: req.body.user_id });
+        },
+    });
+});
 ```
+
+Notes:
+- The OpenAPI prefix defaults to `/<id>` so paths in `/api-docs/oas` match the URLs clients actually call (Directus mounts each endpoint extension under `/<id>`).
+- `services`, `getSchema`, `logger`, ... are available in the setup closure and naturally accessible from each handler.
+- For finer control (e.g. mixing Zod and raw Express routes), the lower-level `defineRoute(router, config)` is still exported.
 
 Public exports (named exports of the package main, alongside `validate`):
 
 | Export            | Purpose                                                                          |
 | ----------------- | -------------------------------------------------------------------------------- |
-| `defineRoute`     | Register a route: schemas → registry, validator middleware, typed handler.       |
+| `defineEndpoint`  | Declarative wrapper for a Directus endpoint extension built on Zod routes.       |
+| `defineRoute`     | Lower-level route registration when you already have your own router.            |
 | `registerSchema`  | Register a reusable Zod schema as `components.schemas.<name>` (emits `$ref`).    |
 | `z`               | Re-exported `zod` already extended with `.openapi()` metadata.                   |
-| `zodValidator`    | The same per-slot validation middleware used by `defineRoute`, for advanced use. |
-
-CommonJS works too: `const { defineRoute, registerSchema, z } = require('directus-extension-api-docs')`.
+| `zodValidator`    | The per-slot validation middleware used internally, for advanced use.            |
 
 Validation errors are returned as HTTP `400` with the same `{ message, errors[] }` envelope used by `express-openapi-validator`, so existing API consumers don't need to change. Coexists with YAML definitions: pick whichever fits each endpoint.

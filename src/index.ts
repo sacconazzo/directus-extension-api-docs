@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { defineEndpoint } from '@directus/extensions-sdk';
+// Aliased to avoid colliding with our own `defineEndpoint` re-export below.
+import { defineEndpoint as defineDirectusEndpoint } from '@directus/extensions-sdk';
 // import { SchemaOverview } from '@directus/shared/types';
 import { SchemaOverview } from '@directus/types';
 import { Router, Request, Response, NextFunction } from 'express';
@@ -8,9 +9,9 @@ import { buildZodOasFragment } from './zod/openapi';
 
 // Re-export Zod helpers as named exports of the main entry, alongside
 // `validate`. Consumers import them from the package root, e.g.:
-//   const { defineRoute, registerSchema, z } = require('directus-extension-api-docs');
-export { z, defineRoute, registerSchema, registry, zodValidator, buildZodOasFragment } from './zod';
-export type { RouteConfig, HttpMethod, ResponseDef, ZodValidatorTargets, ZodOasFragment } from './zod';
+//   const { defineEndpoint, defineRoute, registerSchema, z } = require('directus-extension-api-docs');
+export { z, defineEndpoint, defineRoute, registerSchema, registry, zodValidator, buildZodOasFragment } from './zod';
+export type { RouteConfig, HttpMethod, ResponseDef, ZodValidatorTargets, ZodOasFragment, EndpointSetup, EndpointContext, RouteHelper } from './zod';
 
 const swaggerUi = require('swagger-ui-express');
 const OpenApiValidator = require('express-openapi-validator');
@@ -59,7 +60,7 @@ export async function validate(router: Router, services: any, schema: SchemaOver
     return router;
 }
 
-export const handler = defineEndpoint((router, { services, logger, getSchema }) => {
+export const handler = defineDirectusEndpoint((router, { services, logger, getSchema }) => {
     const options = {
         swaggerOptions: {
             url: `/${id}/oas`,
