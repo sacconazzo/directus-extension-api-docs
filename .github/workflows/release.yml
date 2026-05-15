@@ -13,13 +13,50 @@ jobs:
         name: Release on pushed Tag
         runs-on: ubuntu-22.04
         steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Extract CHANGELOG section for this tag
+              id: changelog
+              env:
+                  tag: ${{ github.ref_name }}
+              run: |
+                  # Strip the leading "v" so the tag matches "## [3.0.0]" in CHANGELOG.md.
+                  version="${tag#v}"
+                  if [ -f CHANGELOG.md ]; then
+                      awk -v ver="$version" '
+                          $0 ~ "^## \\[" ver "\\]" { flag=1; next }
+                          flag && /^## \[/         { exit }
+                          flag                     { print }
+                      ' CHANGELOG.md > release-notes.md
+                  fi
+                  # Fall back to auto-generated notes if the section is empty or missing.
+                  if [ -s release-notes.md ]; then
+                      echo "no_section=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "no_section=true" >> "$GITHUB_OUTPUT"
+                  fi
+
             - name: Create release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   tag: ${{ github.ref_name }}
+                  no_section: ${{ steps.changelog.outputs.no_section }}
               run: |
-                  gh release list --repo="$GITHUB_REPOSITORY" | grep -q "$tag" && echo "Release $tag already exists" ||\
-                  gh release create "$tag" \
-                      --repo="$GITHUB_REPOSITORY" \
-                      --title="$Release ${tag}" \
-                      --generate-notes
+                  if gh release list --repo="$GITHUB_REPOSITORY" | grep -q "$tag"; then
+                      echo "Release $tag already exists"
+                      exit 0
+                  fi
+                  if [ "$no_section" = "true" ]; then
+                      gh release create "$tag" \
+                          --repo="$GITHUB_REPOSITORY" \
+                          --title "$tag" \
+                          --generate-notes
+                  else
+                      gh release create "$tag" \
+                          --repo="$GITHUB_REPOSITORY" \
+                          --title "$tag" \
+                          --notes-file release-notes.md
+                  fi

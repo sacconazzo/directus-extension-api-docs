@@ -11,9 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 A major release introducing a **Zod-first route definition pipeline** that lives
 alongside the existing YAML one. Every README-documented usage from 2.3.x keeps
-working unchanged — the major bump reflects the new public API surface, the
-bundled runtime dependencies, and a small CJS-interop shape change (see
-*Compatibility* below).
+working unchanged — the major bump reflects the new public API surface and the
+bundled runtime dependencies.
 
 ### Added
 
