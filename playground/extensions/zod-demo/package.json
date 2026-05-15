@@ -1,0 +1,11 @@
+{
+    "name": "zod-demo",
+    "version": "0.0.1",
+    "main": "index.js",
+    "directus:extension": {
+        "type": "endpoint",
+        "path": "index.js",
+        "source": "index.js",
+        "host": "^9.19.2"
+    }
+}

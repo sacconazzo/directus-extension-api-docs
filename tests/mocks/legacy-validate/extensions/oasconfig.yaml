@@ -1,0 +1,43 @@
+docsPath: 'api-docs'
+useAuthentication: false
+info:
+  title: legacy-validate-fixture
+  version: '0.0.1'
+paths:
+  /test/echo:
+    post:
+      summary: Echoes the body back when valid
+      tags: [Echo]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+      responses:
+        '200': { description: OK }
+  /test/required-query:
+    get:
+      summary: Requires a query parameter
+      tags: [Echo]
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+tags:
+  - { name: Echo, description: Echo endpoints }
+components:
+  schemas:
+    EchoBody:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }

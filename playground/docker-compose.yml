@@ -1,0 +1,57 @@
+# Self-contained Directus playground for runtime-testing this extension.
+#
+# Usage from the repo root:
+#   pnpm build
+#   docker compose -f playground/docker-compose.yml up
+#
+# Then open:
+#   http://localhost:8055/admin          (login admin@example.com / admin)
+#   http://localhost:8055/api-docs       (Swagger UI, no auth required here)
+#   http://localhost:8055/api-docs/oas   (raw OpenAPI JSON)
+#
+# Two demo extensions are pre-mounted under `extensions/`:
+#   - yaml-demo   exercises the legacy YAML pipeline + validate()
+#   - zod-demo    exercises the Zod pipeline + defineRoute()
+#
+# Try them with curl:
+#   curl -X POST http://localhost:8055/yaml-demo/echo \
+#        -H 'Content-Type: application/json' -d '{"name":"alice"}'
+#   curl -X POST http://localhost:8055/zod-demo/hello \
+#        -H 'Content-Type: application/json' -d '{"name":"alice"}'
+#
+# This repo is read-only-mounted as a Directus extension, so Directus registers
+# /api-docs. NODE_PATH lets demo endpoints resolve
+# `require('directus-extension-api-docs')` to that same module instance.
+# Rebuild with `pnpm build` to pick up code changes; EXTENSIONS_AUTO_RELOAD
+# reloads them without restarting the container.
+
+name: api-docs-playground
+
+services:
+    directus:
+        # Pinned to the current Directus 11.x stable line (latest is 11.17.4
+        # as of this writing — bump as new patches land). Directus 12 has
+        # not been released yet; 11.x is the current major. The extension's
+        # `host` in package.json supports `^9 || ^10 || ^11` so it also
+        # works against the 10.x ESU line if you switch the image tag.
+        image: directus/directus:11.17.4
+        ports:
+            - '8055:8055'
+        environment:
+            KEY: 'playground-key-change-me'
+            SECRET: 'playground-secret-change-me'
+            DB_CLIENT: 'sqlite3'
+            DB_FILENAME: '/directus/database/data.db'
+            ADMIN_EMAIL: 'admin@example.com'
+            ADMIN_PASSWORD: 'admin'
+            EXTENSIONS_AUTO_RELOAD: 'true'
+            NODE_PATH: '/directus/extensions'
+            LOG_LEVEL: 'info'
+            PUBLIC_URL: 'http://localhost:8055'
+        volumes:
+            - ./data/database:/directus/database
+            - ./extensions/oasconfig.yaml:/directus/extensions/oasconfig.yaml:ro
+            - ./extensions/yaml-demo:/directus/extensions/yaml-demo
+            - ./extensions/zod-demo:/directus/extensions/zod-demo
+            - ./extensions/directus-services-demo:/directus/extensions/directus-services-demo
+            - ..:/directus/extensions/directus-extension-api-docs:ro
