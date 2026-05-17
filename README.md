@@ -1,6 +1,10 @@
 # directus-extension-api-docs
 
-> Compatible with latest Directus versions and packaged extensions.
+[![npm version](https://img.shields.io/npm/v/directus-extension-api-docs.svg)](https://www.npmjs.com/package/directus-extension-api-docs)
+[![npm downloads](https://img.shields.io/npm/dm/directus-extension-api-docs.svg)](https://www.npmjs.com/package/directus-extension-api-docs)
+[![license](https://img.shields.io/npm/l/directus-extension-api-docs.svg)](./LICENSE)
+
+> Compatible with Directus `^9 || ^10 || ^11` and both bundled and non-bundled endpoint extensions.
 
 Release notes: see [CHANGELOG.md](./CHANGELOG.md).
 
@@ -13,6 +17,17 @@ Directus Extension providing:
 -   optional Zod-first route definitions for type-safe validation + OpenAPI auto-generation (see [Zod-first routes](#zod-first-routes-optional))
 
 ![workspace](assets/swagger.png)
+
+## Contents
+
+-   [Prerequisites](#prerequisites)
+-   [Installation](#installation)
+-   [Configuration (optional)](#configuration-optional)
+-   [Definitions (optional)](#definitions-optional) — YAML
+-   [Validations (optional)](#validations-optional) — YAML-based runtime validation
+-   [Zod-first routes (optional)](#zod-first-routes-optional) — type-safe alternative
+-   [YAML vs Zod](#yaml-vs-zod)
+-   [Contributing](#contributing) · [Reporting issues](#reporting-issues) · [License](#license)
 
 ## Prerequisites
 
@@ -252,3 +267,24 @@ Public exports (named exports of the package main, alongside `validate`):
 | `zodValidator`    | The per-slot validation middleware used internally, for advanced use.            |
 
 Validation errors are returned as HTTP `400` with the same `{ message, errors[] }` envelope used by `express-openapi-validator`, so existing API consumers don't need to change. Coexists with YAML definitions: pick whichever fits each endpoint.
+
+## YAML vs Zod
+
+Both pipelines feed the same `/api-docs/oas` document and can be mixed per endpoint.
+
+-   **YAML** (`oasconfig.yaml` + `oas.yaml`): preferred when the OpenAPI spec is the source of truth, or when you import an existing spec. Runtime validation is opt-in via `validate(...)`.
+-   **Zod**: preferred when you want one source of truth that also types `req.body` / `req.params` / `req.query` and validates by default. No separate YAML file to keep in sync.
+
+## Contributing
+
+Issues and pull requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, scripts, and commit conventions.
+
+## Reporting issues
+
+Bugs and feature requests: [github.com/sacconazzo/directus-extension-api-docs/issues](https://github.com/sacconazzo/directus-extension-api-docs/issues).
+
+For security vulnerabilities, please follow [SECURITY.md](./SECURITY.md) instead of opening a public issue.
+
+## License
+
+[MIT](./LICENSE) © Giona Righini (sacconazzo)

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- README: npm/license badges, explicit Directus version range, table of contents, "YAML vs Zod" guidance, Contributing/Issues/License footer.
+- Added `CONTRIBUTING.md` (setup, scripts, playground, PR conventions) and `SECURITY.md` (private vulnerability reporting).
+- Renamed `license` → `LICENSE` (and updated `package.json` `files[]`).
+
 ## [3.0.0] - 2026-05-14
 
 A major release introducing a **Zod-first route definition pipeline** that lives

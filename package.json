@@ -10,7 +10,7 @@
     "files": [
         "dist",
         "!*.map",
-        "license",
+        "LICENSE",
         "CHANGELOG.md"
     ],
     "repository": "https://github.com/sacconazzo/directus-extension-api-docs",
