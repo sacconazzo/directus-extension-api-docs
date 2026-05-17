@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-05-17
+
 ### Docs
 
 - README: npm/license badges, explicit Directus version range, table of contents, "YAML vs Zod" guidance, Contributing/Issues/License footer.
@@ -119,6 +121,7 @@ bundled runtime dependencies, and a small CJS-interop shape change (see
 
 For releases before 2.3.4 see the [Git history](https://github.com/sacconazzo/directus-extension-api-docs/commits/main).
 
-[Unreleased]: https://github.com/sacconazzo/directus-extension-api-docs/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/sacconazzo/directus-extension-api-docs/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/sacconazzo/directus-extension-api-docs/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/sacconazzo/directus-extension-api-docs/releases/tag/v3.0.0
 [2.3.4]: https://github.com/sacconazzo/directus-extension-api-docs/releases/tag/v2.3.4
