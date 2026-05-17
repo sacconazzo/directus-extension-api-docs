@@ -9,11 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.1] - 2026-05-17
 
-### Docs
+Docs-only patch release: aligns the package documentation with public OSS
+conventions. No runtime, API, or dependency changes vs. [3.0.0]; users on
+3.0.0 do not need to upgrade for functionality.
 
-- README: npm/license badges, explicit Directus version range, table of contents, "YAML vs Zod" guidance, Contributing/Issues/License footer.
-- Added `CONTRIBUTING.md` (setup, scripts, playground, PR conventions) and `SECURITY.md` (private vulnerability reporting).
-- Renamed `license` → `LICENSE` (and updated `package.json` `files[]`).
+### Added
+
+- `CONTRIBUTING.md` — setup (`pnpm install`), scripts (`pnpm test` /
+  `typecheck` / `lint` / `build` / `dev`), playground walkthrough, PR
+  conventions, and pointer to `SECURITY.md`.
+- `SECURITY.md` — private vulnerability reporting via GitHub Security
+  Advisories; supported version line stated as `3.x`.
+
+### Changed
+
+- README: shields.io badges (npm version, monthly downloads, license),
+  table of contents, "YAML vs Zod" guidance section to help users pick
+  between the two pipelines introduced in [3.0.0], and a footer with
+  Contributing / Reporting issues / License sections linking the new files.
+- README intro: replaced the vague "Compatible with latest Directus
+  versions" line with the explicit range `^9 || ^10 || ^11`, matching
+  `directus:extension.host` in `package.json`.
 
 ## [3.0.0] - 2026-05-14
 
