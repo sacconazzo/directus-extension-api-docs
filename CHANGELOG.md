@@ -7,13 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-05-17
+
+Docs-only patch release: aligns the package documentation with public OSS
+conventions. No runtime, API, or dependency changes vs. [3.0.0]; users on
+3.0.0 do not need to upgrade for functionality.
+
+### Added
+
+- `CONTRIBUTING.md` — setup (`pnpm install`), scripts (`pnpm test` /
+  `typecheck` / `lint` / `build` / `dev`), playground walkthrough, PR
+  conventions, and pointer to `SECURITY.md`.
+- `SECURITY.md` — private vulnerability reporting via GitHub Security
+  Advisories; supported version line stated as `3.x`.
+
+### Changed
+
+- README: shields.io badges (npm version, monthly downloads, license),
+  table of contents, "YAML vs Zod" guidance section to help users pick
+  between the two pipelines introduced in [3.0.0], and a footer with
+  Contributing / Reporting issues / License sections linking the new files.
+- README intro: replaced the vague "Compatible with latest Directus
+  versions" line with the explicit range `^9 || ^10 || ^11`, matching
+  `directus:extension.host` in `package.json`.
+
 ## [3.0.0] - 2026-05-14
 
 A major release introducing a **Zod-first route definition pipeline** that lives
 alongside the existing YAML one. Every README-documented usage from 2.3.x keeps
-working unchanged — the major bump reflects the new public API surface, the
-bundled runtime dependencies, and a small CJS-interop shape change (see
-*Compatibility* below).
+working unchanged — the major bump reflects the new public API surface and the
+bundled runtime dependencies.
 
 ### Added
 
@@ -113,6 +136,7 @@ bundled runtime dependencies, and a small CJS-interop shape change (see
 
 For releases before 2.3.4 see the [Git history](https://github.com/sacconazzo/directus-extension-api-docs/commits/main).
 
-[Unreleased]: https://github.com/sacconazzo/directus-extension-api-docs/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/sacconazzo/directus-extension-api-docs/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/sacconazzo/directus-extension-api-docs/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/sacconazzo/directus-extension-api-docs/releases/tag/v3.0.0
 [2.3.4]: https://github.com/sacconazzo/directus-extension-api-docs/releases/tag/v2.3.4
