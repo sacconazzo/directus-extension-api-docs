@@ -1,7 +1,6 @@
 # directus-extension-api-docs
 
 [![npm version](https://img.shields.io/npm/v/directus-extension-api-docs.svg)](https://www.npmjs.com/package/directus-extension-api-docs)
-[![npm downloads](https://img.shields.io/npm/dm/directus-extension-api-docs.svg)](https://www.npmjs.com/package/directus-extension-api-docs)
 [![license](https://img.shields.io/npm/l/directus-extension-api-docs.svg)](./LICENSE)
 
 > Compatible with Directus `^9 || ^10 || ^11` and both bundled and non-bundled endpoint extensions.
